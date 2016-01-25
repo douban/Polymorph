@@ -1,0 +1,5 @@
+language: objective-c
+xcode_project: Polymorph.xcodeproj
+xcode_scheme: Polymorph
+after_success:
+    - bash <(curl -s https://codecov.io/bash)
