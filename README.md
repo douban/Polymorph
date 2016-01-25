@@ -1,6 +1,8 @@
 # Polymorph
 
-[![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://github.com/douban/Polymorph/blob/master/LICENSE)
+[![License](https://img.shields.io/cocoapods/l/Polymorph.svg)](https://github.com/douban/Polymorph/blob/master/LICENSE)
+[![CocoaPods](https://img.shields.io/cocoapods/p/Polymorph.svg)](https://cocoapods.org/pods/Polymorph)
+[![CocoaPods](https://img.shields.io/cocoapods/v/Polymorph.svg)](https://cocoapods.org/pods/Polymorph)
 [![Build Status](https://travis-ci.org/douban/Polymorph.svg)](https://travis-ci.org/douban/Polymorph)
 [![Codecov](https://img.shields.io/codecov/c/github/douban/Polymorph.svg)](https://codecov.io/github/douban/Polymorph)
 
