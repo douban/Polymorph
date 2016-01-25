@@ -1,6 +1,5 @@
 language: objective-c
 osx_image: xcode7.2
-xcode_project: Polymorph.xcodeproj
-xcode_scheme: Polymorph
+script: xctool -sdk iphonesimulator -project Polymorph.xcodeproj -scheme Polymorph test
 after_success:
     - bash <(curl -s https://codecov.io/bash)
