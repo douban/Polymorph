@@ -375,19 +375,13 @@ static void check_accessor(Class class)
     return NO;
   }
 
-  SEL dpAttrsSel = NSSelectorFromString([NSString stringWithFormat:@"__plm_property_attr_%s",
-                                         property_getName(property)]);
-  if (![self respondsToSelector:dpAttrsSel]) {
-    return NO;
-  }
-
   @onExit { free(attrs); };
 
   if (!attrs->dynamic) { return NO; }
 
-  if ((getter && !sel_isEqual(attrs->getter, sel))
-      || (!getter && !sel_isEqual(attrs->setter, sel))) {
-    // Getter or setter not match
+  SEL dpAttrsSel = NSSelectorFromString([NSString stringWithFormat:@"__plm_property_attr_%s",
+                                         property_getName(property)]);
+  if (![self respondsToSelector:dpAttrsSel]) {
     return NO;
   }
 
