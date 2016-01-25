@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "Polymorph"
-  s.version      = "1.0"
+  s.version      = "1.0.1"
   s.summary      = "Transform value of dictionary to property of Objective-C class."
   s.description  = <<-DESC
   Transform value of dictionary to property of Objective-C class, by using a
