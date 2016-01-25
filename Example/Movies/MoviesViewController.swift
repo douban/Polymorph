@@ -9,7 +9,7 @@
 import UIKit
 import SafariServices
 
-class ViewController: UITableViewController {
+class MoviesViewController: UITableViewController {
 
   var inTheaterMovies: MovieResult?
 
@@ -33,7 +33,7 @@ class ViewController: UITableViewController {
 
 }
 
-extension ViewController {
+extension MoviesViewController {
 
   override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return inTheaterMovies?.movies.count ?? 0

@@ -9,3 +9,5 @@
 #import "MovieResult.h"
 #import "Movie.h"
 #import "Celebrity.h"
+
+#import "Commit.h"
