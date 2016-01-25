@@ -116,7 +116,7 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"issue": @(100), @"sue": @"Blah"}];
   XCTAssertTrue([object.isSue isKindOfClass:[NSNumber class]]);
-  XCTAssertEqual(object.isSue, @(100));
+  XCTAssertEqual(object.isSue.integerValue, 100);
   XCTAssertTrue([object.sue isKindOfClass:[NSString class]]);
   XCTAssertEqual(object.sue, @"Blah");
 }
