@@ -1,5 +1,9 @@
 # Polymorph
 
+[![License](https://img.shields.io/badge/license-BSD-blue.svg)](https://github.com/douban/Polymorph/blob/master/LICENSE)
+[![Build Status](https://travis-ci.org/douban/Polymorph.svg)](https://travis-ci.org/douban/Polymorph)
+[![Codecov](https://img.shields.io/codecov/c/github/douban/Polymorph.svg)](https://codecov.io/github/douban/Polymorph)
+
 > [Polymorph](http://wowwiki.wikia.com/wiki/Polymorph) transforms the enemy into a sheep.
 
 Transform value of dictionary to property of Objective-C class, by using a `@dynamic` like directive.
