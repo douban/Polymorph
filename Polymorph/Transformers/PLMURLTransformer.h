@@ -6,7 +6,7 @@
 //  Copyright (c) 2015 douban. All rights reserved.
 //
 
-@import Foundation;
+#import <Foundation/Foundation.h>
 
 FOUNDATION_EXTERN NSString * const PLMURLTransformerName;
 
