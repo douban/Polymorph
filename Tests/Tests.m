@@ -13,6 +13,9 @@
 #import "Polymorph.h"
 #import "PLMModel.h"
 #import "PLMArrayTransformer.h"
+#import "NSValueTransformer+TransformerKit.h"
+
+static NSString * const DoubleValueTransformerName = @"DoubleValueTransformerName";
 
 #define PRIMITIVE_TYPES char, int, short, long, float, double
 
@@ -35,6 +38,8 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 @property (nonatomic, strong) NSNumber *isSue;
 @property (nonatomic, strong) NSString *sue;
 
+@property (nonatomic, assign) NSInteger doubleIt;
+
 @end
 
 @implementation _TypesObject
@@ -51,6 +56,8 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic_keypath(keyPathBool, @"key.path");
 
+@plm_dynamic(doubleIt, @"double_it", DoubleValueTransformerName);
+
 @end
 
 @interface PolymorphTests : XCTestCase
@@ -58,6 +65,16 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 @end
 
 @implementation PolymorphTests
+
++ (void)load
+{
+  @autoreleasepool {
+    [NSValueTransformer registerValueTransformerWithName:DoubleValueTransformerName
+                                   transformedValueClass:[NSNumber class]
+                      returningTransformedValueWithBlock:^id(id value) { return @([value integerValue] * 2); }
+                  allowingReverseTransformationWithBlock:^id(id value) { return @([value integerValue] / 2); }];
+  }
+}
 
 - (void)testPrimitiveTypes
 {
@@ -76,6 +93,14 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
   object.intValue = 200;
   XCTAssertEqual(object.intValue, 200);
+}
+
+- (void)testPrimitiveTransform
+{
+  _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"double_it": @100}];
+  XCTAssertEqual(object.doubleIt, 200);
+  object.doubleIt = 500;
+  XCTAssertEqual(object.doubleIt, 500);
 }
 
 - (void)testObjectTypes

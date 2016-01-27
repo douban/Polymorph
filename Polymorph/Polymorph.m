@@ -179,6 +179,7 @@ static BOOL inject_getter(Class cls,
         ? [self_.polymorphRawData valueForKeyPath:jsonFieldName] \
         : self_.polymorphRawData[jsonFieldName]; \
       if (value == [NSNull null]) { value = nil; } \
+      if (transformer) { value = [transformer transformedValue:value]; } \
       safety_type_check(value, [NSNumber class]); \
       return [value SELECTOR]; \
     }; \
@@ -238,7 +239,9 @@ static BOOL inject_setter(Class cls,
 #define PRIMITIVE_SETTER_ITER(INDEX, TYPE) \
   else if (strcmp(attrs->type, @encode(TYPE)) == 0) { \
     setter = ^(NSObject<PLMRawDataProvider> *self_, TYPE value) { \
-      self_.polymorphRawData[jsonFieldName] = @(value); \
+      NSNumber *number = @(value); \
+      if (transformer) { number = [transformer reverseTransformedValue:number]; } \
+      self_.polymorphRawData[jsonFieldName] = number; \
     }; \
   }
 
