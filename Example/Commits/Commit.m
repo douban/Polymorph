@@ -13,13 +13,15 @@
 
 + (void)load
 {
-  NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-  formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
-  formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-  [NSValueTransformer registerValueTransformerWithName:@"ISO8601DateTransformer"
-                                 transformedValueClass:[NSDate class]
-                    returningTransformedValueWithBlock:^id(id value) { return [formatter dateFromString:value]; }
-                allowingReverseTransformationWithBlock:^id(id value) { return [formatter stringFromDate:value]; }];
+  @autoreleasepool {
+    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+    formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+    [NSValueTransformer registerValueTransformerWithName:@"ISO8601DateTransformer"
+                                   transformedValueClass:[NSDate class]
+                      returningTransformedValueWithBlock:^id(id value) { return [formatter dateFromString:value]; }
+                  allowingReverseTransformationWithBlock:^id(id value) { return [formatter stringFromDate:value]; }];
+  }
 }
 
 @plm_dynamic(sha)
