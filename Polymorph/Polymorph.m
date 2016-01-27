@@ -130,7 +130,7 @@ FOUNDATION_STATIC_INLINE NSString *default_transformer(Class targetClass)
 
 static id getter_impl(NSObject<PLMRawDataProvider> *self,
                       NSString *jsonField,
-                      NSString *transformer,
+                      NSValueTransformer *transformer,
                       Class targetClass,
                       BOOL useKeypath,
                       const void *key)
@@ -150,7 +150,7 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
       && [targetClass conformsToProtocol:@protocol(PLMRawDataProvider)]) {
     value = [targetClass objectWithPolymorphRawData:[value mutableCopy]];
   } else if (transformer) {
-    value = [[NSValueTransformer valueTransformerForName:transformer] transformedValue:value];
+    value = [transformer transformedValue:value];
   }
 
   safety_type_check(value, targetClass);
@@ -163,7 +163,7 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
 static BOOL inject_getter(Class cls,
                           ext_propertyAttributes *attrs,
                           NSString *jsonFieldName,
-                          NSString *transformer,
+                          NSValueTransformer *transformer,
                           BOOL useKeypath)
 {
   NSCParameterAssert(attrs != nil && jsonFieldName != nil);
@@ -213,7 +213,7 @@ static BOOL inject_getter(Class cls,
 static void setter_impl(NSObject<PLMRawDataProvider> *self,
                         NSString *jsonField,
                         id value,
-                        NSString *transformer,
+                        NSValueTransformer *transformer,
                         const void *key)
 {
   objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -221,7 +221,7 @@ static void setter_impl(NSObject<PLMRawDataProvider> *self,
   if ([[value class] conformsToProtocol:@protocol(PLMRawDataProvider)]) {
     value = [(NSObject<PLMRawDataProvider> *)value polymorphRawData];
   } else if (transformer) {
-    value = [[NSValueTransformer valueTransformerForName:transformer] reverseTransformedValue:value];
+    value = [transformer reverseTransformedValue:value];
   }
 
   [self.polymorphRawData setValue:value forKey:jsonField];
@@ -231,7 +231,7 @@ static void setter_impl(NSObject<PLMRawDataProvider> *self,
 static BOOL inject_setter(Class cls,
                           ext_propertyAttributes *attrs,
                           NSString *jsonFieldName,
-                          NSString *transformer)
+                          NSValueTransformer *transformer)
 {
   id setter = nil;
 
@@ -392,15 +392,17 @@ static void check_accessor(Class class)
 
   NSString *jsonField = dpAttrs[_PolymorphAttributeJSONField]
     ?: [[NSString stringWithUTF8String:property_getName(property)] lowercaseString];
-  NSString *transformer = dpAttrs[_PolymorphAttributeTransformer];
-  if (attrs->objectClass && transformer == nil) {
-    transformer = default_transformer(attrs->objectClass);
+  NSString *transformerName = dpAttrs[_PolymorphAttributeTransformer];
+  if (attrs->objectClass && transformerName == nil) {
+    transformerName = default_transformer(attrs->objectClass);
   }
   BOOL useKeypath = [dpAttrs[_PolymorphAttributeKeypath] boolValue];
 
   if (useKeypath) {
     NSCAssert(attrs->readonly, @"keypath accessor only support readonly property");
   }
+
+  NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:transformerName];
 
   return getter
     ? inject_getter(self, attrs, jsonField, transformer, useKeypath)
