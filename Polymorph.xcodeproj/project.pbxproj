@@ -18,6 +18,7 @@
 		B931AA5A1C48F91A002D3238 /* NSValueTransformer+TransformerKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA571C48F91A002D3238 /* NSValueTransformer+TransformerKit.m */; };
 		B931AA5D1C49359B002D3238 /* PLMArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA5C1C49359B002D3238 /* PLMArrayTransformer.m */; };
 		B931AA631C493F73002D3238 /* PLMModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA621C493F73002D3238 /* PLMModel.m */; };
+		B9881D861C5B73BE00A6F07B /* TransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B9881D851C5B73BE00A6F07B /* TransformerTests.m */; };
 		B9AAB4781C4BC6A8003AE63D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9AAB4771C4BC6A8003AE63D /* Assets.xcassets */; };
 		B9AAB47B1C4BC6A8003AE63D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B9AAB4791C4BC6A8003AE63D /* LaunchScreen.storyboard */; };
 		B9AAB4881C4BC773003AE63D /* libPolymorph.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B931AA2E1C48F8C3002D3238 /* libPolymorph.a */; };
@@ -82,6 +83,7 @@
 		B931AA5C1C49359B002D3238 /* PLMArrayTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLMArrayTransformer.m; sourceTree = "<group>"; };
 		B931AA611C493F73002D3238 /* PLMModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLMModel.h; sourceTree = "<group>"; };
 		B931AA621C493F73002D3238 /* PLMModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLMModel.m; sourceTree = "<group>"; };
+		B9881D851C5B73BE00A6F07B /* TransformerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransformerTests.m; sourceTree = "<group>"; };
 		B9AAB4691C4BC6A7003AE63D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AAB4771C4BC6A8003AE63D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B9AAB47A1C4BC6A8003AE63D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -177,6 +179,7 @@
 			isa = PBXGroup;
 			children = (
 				B931AA441C48F90E002D3238 /* Tests.m */,
+				B9881D851C5B73BE00A6F07B /* TransformerTests.m */,
 				B931AA461C48F90E002D3238 /* Info.plist */,
 			);
 			path = Tests;
@@ -386,6 +389,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B931AA451C48F90E002D3238 /* Tests.m in Sources */,
+				B9881D861C5B73BE00A6F07B /* TransformerTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

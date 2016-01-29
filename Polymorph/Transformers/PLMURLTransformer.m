@@ -24,16 +24,8 @@ NSString * const PLMURLTransformerName = @"PLMURLTransformerName";
                           return nil;
                         }
 
-                        NSURL * __block url = nil;
                         NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
-                        [linkDetector enumerateMatchesInString:value
-                                                       options:0
-                                                         range:NSMakeRange(0, value.length)
-                                                    usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-                                                      url = result.URL;
-                                                      *stop = url != nil;
-                                                    }];
-                        return url;
+                        return [[linkDetector firstMatchInString:value options:0 range:NSMakeRange(0, value.length)] URL];
                       }
                   allowingReverseTransformationWithBlock:^id(NSURL *value) {
                     return [value absoluteString];
