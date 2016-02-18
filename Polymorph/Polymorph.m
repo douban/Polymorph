@@ -6,6 +6,12 @@
 //  Copyright © 2016 Douban Inc. All rights reserved.
 //
 
+#include <TargetConditionals.h>
+
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif
+
 #include <objc/runtime.h>
 
 #import "Polymorph.h"
@@ -180,7 +186,7 @@ static BOOL inject_getter(Class cls,
         : self_.polymorphRawData[jsonFieldName]; \
       if (value == [NSNull null]) { value = nil; } \
       if (transformer) { value = [transformer transformedValue:value]; } \
-      safety_type_check(value, [NSNumber class]); \
+      safety_type_check(value, [NSValue class]); \
       return [value SELECTOR]; \
     }; \
   }
@@ -201,6 +207,17 @@ static BOOL inject_getter(Class cls,
                     unsigned short, unsignedShortValue, unsigned long, unsignedLongValue,
                     unsigned long long, unsignedLongLongValue)
   PRIMITIVE_GETTERS(float, floatValue, double, doubleValue, BOOL, boolValue)
+
+  PRIMITIVE_GETTERS(NSRange, rangeValue)
+
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+  PRIMITIVE_GETTERS(CGPoint, pointValue, CGSize, sizeValue, CGRect, rectValue,
+                    NSEdgeInsets, edgeInsetsValue)
+#else
+  PRIMITIVE_GETTERS(CGPoint, CGPointValue, CGSize, CGSizeValue, CGRect, CGRectValue,
+                    CGVector, CGVectorValue, CGAffineTransform, CGAffineTransformValue,
+                    UIEdgeInsets, UIEdgeInsetsValue, UIOffset, UIOffsetValue)
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
 
   NSCAssert(getter != nil, @"Getter should be generated");
 
@@ -228,7 +245,6 @@ static void setter_impl(NSObject<PLMRawDataProvider> *self,
   [self.polymorphRawData setValue:value forKey:jsonField];
 }
 
-
 static BOOL inject_setter(Class cls,
                           ext_propertyAttributes *attrs,
                           NSString *jsonFieldName,
@@ -247,6 +263,20 @@ static BOOL inject_setter(Class cls,
 
 #define PRIMITIVE_SETTERS(...) metamacro_foreach(PRIMITIVE_SETTER_ITER,, __VA_ARGS__)
 
+#define STRUCT_SETTER_1(TYPE) \
+  else if (strcmp(attrs->type, @encode(TYPE)) == 0) { \
+    setter = ^(NSObject<PLMRawDataProvider> *self_, TYPE value) {
+
+#define STRUCT_SETTER_0(SELECTOR) \
+      NSValue *result = [NSValue SELECTOR:value]; \
+      if (transformer) { result = [transformer reverseTransformedValue:result]; } \
+      self_.polymorphRawData[jsonFieldName] = result; \
+    }; \
+  }
+
+#define NSVALUE_SETTERS(...) metamacro_foreach(NSVALUE_SETTERS_ITER,, __VA_ARGS__)
+#define NSVALUE_SETTERS_ITER(INDEX, VAL) metamacro_concat(STRUCT_SETTER_, metamacro_is_even(INDEX))(VAL)
+
   if (attrs->type[0] == '@') {
     ext_propertyMemoryManagementPolicy mmp = attrs->memoryManagementPolicy;
     SEL name = attrs->getter;
@@ -259,6 +289,16 @@ static BOOL inject_setter(Class cls,
                     unsigned char, unsigned int, unsigned short, unsigned long, unsigned long long,
                     float,       double,
                     BOOL)
+  NSVALUE_SETTERS(NSRange, valueWithRange)
+
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+  NSVALUE_SETTERS(CGPoint, valueWithPoint, CGSize, valueWithSize, CGRect, valueWithRect,
+                  NSEdgeInsets, valueWithEdgeInsets)
+#else
+  NSVALUE_SETTERS(CGPoint, valueWithCGPoint, CGSize, valueWithCGSize, CGRect, valueWithCGRect,
+                  CGVector, valueWithCGVector, CGAffineTransform, valueWithCGAffineTransform,
+                  UIEdgeInsets, valueWithUIEdgeInsets, UIOffset, valueWithUIOffset)
+#endif
 
   NSCAssert(setter != nil, @"Setter should be generated");
 

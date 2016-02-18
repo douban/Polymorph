@@ -16,6 +16,8 @@
 #import "NSValueTransformer+TransformerKit.h"
 
 static NSString * const DoubleValueTransformerName = @"DoubleValueTransformerName";
+static NSString * const CGPointTransformerName = @"CGPointTransformerName";
+static NSString * const CGSizeTransformerName = @"CGSizeTransformerName";
 
 #define PRIMITIVE_TYPES char, int, short, long, float, double
 
@@ -40,6 +42,9 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 
 @property (nonatomic, assign) NSInteger doubleIt;
 
+@property (nonatomic, assign) CGPoint point;
+@property (nonatomic, assign) CGSize size;
+
 @end
 
 @implementation _TypesObject
@@ -58,6 +63,9 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic(doubleIt, @"double_it", DoubleValueTransformerName);
 
+@plm_dynamic(point, @"point", CGPointTransformerName)
+@plm_dynamic(size, @"size", CGSizeTransformerName)
+
 @end
 
 @interface PolymorphTests : XCTestCase
@@ -73,6 +81,44 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
                                    transformedValueClass:[NSNumber class]
                       returningTransformedValueWithBlock:^id(id value) { return @([value integerValue] * 2); }
                   allowingReverseTransformationWithBlock:^id(id value) { return @([value integerValue] / 2); }];
+
+    [NSValueTransformer registerValueTransformerWithName:CGPointTransformerName
+                                   transformedValueClass:[NSValue class]
+                      returningTransformedValueWithBlock:^id(NSDictionary *value) {
+                        CGPoint result;
+                        return CGPointMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)value, &result)
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+                          ? [NSValue valueWithPoint:result] : nil;
+#else
+                          ? [NSValue valueWithCGPoint:result] : nil;
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+                      }
+                  allowingReverseTransformationWithBlock:^id(NSValue *value) {
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+                    return CFBridgingRelease(CGPointCreateDictionaryRepresentation(value.pointValue));
+#else
+                    return CFBridgingRelease(CGPointCreateDictionaryRepresentation(value.CGPointValue));
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+                  }];
+
+    [NSValueTransformer registerValueTransformerWithName:CGSizeTransformerName
+                                   transformedValueClass:[NSValue class]
+                      returningTransformedValueWithBlock:^id(NSDictionary *value) {
+                        CGSize result;
+                        return CGSizeMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)value, &result)
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+                          ? [NSValue valueWithSize:result] : nil;
+#else
+                          ? [NSValue valueWithCGSize:result] : nil;
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+                      }
+                  allowingReverseTransformationWithBlock:^id(NSValue *value) {
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+                    return CFBridgingRelease(CGSizeCreateDictionaryRepresentation(value.sizeValue));
+#else
+                    return CFBridgingRelease(CGSizeCreateDictionaryRepresentation(value.CGSizeValue));
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+                  }];
   }
 }
 
@@ -109,6 +155,20 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:json];
   XCTAssertTrue([object.url isKindOfClass:[NSURL class]]);
   XCTAssertEqual(object.url.absoluteString, json[@"url"]);
+}
+
+- (void)testStruct
+{
+  _TypesObject *object = [_TypesObject new];
+  object.size = CGSizeMake(100, 200);
+  object.point = CGPointMake(5, 10);
+  XCTAssertNotEqual([object.dictionary[@"size"] count], 0);
+  XCTAssertNotEqual([object.dictionary[@"point"] count], 0);
+
+  XCTAssertEqual(object.size.width, 100);
+  XCTAssertEqual(object.size.height, 200);
+  XCTAssertEqual(object.point.x, 5);
+  XCTAssertEqual(object.point.y, 10);
 }
 
 - (void)testStoreObjectValues
