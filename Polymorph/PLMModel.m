@@ -13,6 +13,11 @@
   NSMutableDictionary *_dictionary;
 }
 
+- (instancetype)init
+{
+  return [self initWithDictionary:nil];
+}
+
 - (instancetype)initWithDictionary:(NSDictionary *)dictionary
 {
   if ( (self = [super init]) ) {

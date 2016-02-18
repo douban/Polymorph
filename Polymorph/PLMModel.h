@@ -26,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly) NSData *data;
 
-- (instancetype)initWithDictionary:(nullable NSDictionary *)dictionary;
+- (instancetype)initWithDictionary:(nullable NSDictionary *)dictionary NS_DESIGNATED_INITIALIZER;
 
 @end
 
