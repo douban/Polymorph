@@ -16,9 +16,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "B931AA411C48F90D002D3238"
-               BuildableName = "PolymorphTests.xctest"
-               BlueprintName = "PolymorphTests"
+               BlueprintIdentifier = "B91E838B1C75F6FA005B19C1"
+               BuildableName = "PolymorphTests OSX.xctest"
+               BlueprintName = "PolymorphTests OSX"
                ReferencedContainer = "container:Polymorph.xcodeproj">
             </BuildableReference>
          </TestableReference>
