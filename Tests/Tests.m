@@ -45,6 +45,8 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 @property (nonatomic, assign) CGPoint point;
 @property (nonatomic, assign) CGSize size;
 
+@property (nonatomic, assign) BOOL HTTP;
+
 @end
 
 @implementation _TypesObject
@@ -65,6 +67,8 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic(point, @"point", CGPointTransformerName)
 @plm_dynamic(size, @"size", CGSizeTransformerName)
+
+@plm_dynamic(HTTP)
 
 @end
 
@@ -242,6 +246,14 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
   object.isVoted = NO;
   XCTAssertEqual(object.isVoted, NO);
   XCTAssertEqual([object isVoted], NO);
+}
+
+- (void)testAllCapitalName
+{
+  _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"http": @YES}];
+  XCTAssertTrue(object.HTTP);
+  object.HTTP = NO;
+  XCTAssertFalse(object.HTTP);
 }
 
 - (void)testNull

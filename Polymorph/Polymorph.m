@@ -64,13 +64,14 @@ static void property_from_getter(char *buff,
  *  @return YES if success, otherwise NO.
  */
 static BOOL property_from_setter(char *buff,
-                                 const char *selector)
+                                 const char *selector,
+                                 BOOL lower)
 {
   unsigned long selLength = strlen(selector);
   if (selLength > 3 && strncmp(selector, "set", 3) == 0 && isupper(selector[3])) {
     // remove 'set' & ':'
     strncpy(buff, &selector[3], selLength - 4);
-    buff[0] = (char)tolower(buff[0]);
+    if (lower) { buff[0] = (char)tolower(buff[0]); }
     buff[selLength - 4] = '\0';
     return YES;
   }
@@ -117,8 +118,14 @@ static ext_propertyAttributes *copy_property_attrs(Class cls,
       property_from_getter(buff, selName, NO);
       build_attrs(getter);
     }
-  } else if (property_from_setter(buff, selName)) {
+  } else {
+    property_from_setter(buff, selName, YES);
     build_attrs(setter);
+
+    if (attrs == NULL) {
+      property_from_setter(buff, selName, NO);
+      build_attrs(setter);
+    }
   }
 
 #undef build_attrs
