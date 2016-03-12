@@ -8,9 +8,5 @@
 
 #import <Foundation/Foundation.h>
 
+/// Transformer that transform values between `NSString` and `NSURL`
 FOUNDATION_EXTERN NSString * const PLMURLTransformerName;
-
-// NSString <-> NSURL
-@interface PLMURLTransformer : NSValueTransformer
-
-@end

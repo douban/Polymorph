@@ -12,9 +12,8 @@
 
 NSString * const PLMURLTransformerName = @"PLMURLTransformerName";
 
-@implementation PLMURLTransformer
-
-+ (void)load
+__attribute__((constructor))
+static void register_url_transformer()
 {
   @autoreleasepool {
     [NSValueTransformer registerValueTransformerWithName:PLMURLTransformerName
@@ -32,5 +31,3 @@ NSString * const PLMURLTransformerName = @"PLMURLTransformerName";
                   }];
   }
 }
-
-@end
