@@ -10,6 +10,7 @@
 
 #import "PLMRawDataProvider.h"
 #import "PLMModel.h"
+#import "PLMValueTransformer.h"
 #import "PLMArrayTransformer.h"
 #import "PLMURLTransformer.h"
 
@@ -45,10 +46,10 @@
  *  Arguments:
  *  1. _Required_. Property name
  *  2. _Optional_. Dictionary field. Default value is property name in lower case.
- *  3. _Optional_. Name of `NSValueTransformer`. The transformer represented by
- *    value of this argument will be used to transform dictionary value to instance
- *    of declared property type. Property with following type will be transformed
- *    automatically:
+ *  3. _Optional_. Name or instance of `NSValueTransformer`. The transformer
+ *    represented by this argument will be used to transform dictionary value to
+ *    instance of declared property type. Property with following type will be
+ *    transformed automatically:
  *    - `NSString`, `NSNumber`, primitive types.
  *    - `NSURL`.
  *    - Class that conforms to `PLMRawDataProvider` protocol.

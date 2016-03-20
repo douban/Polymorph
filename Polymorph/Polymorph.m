@@ -133,10 +133,10 @@ static ext_propertyAttributes *copy_property_attrs(Class cls,
   return attrs;
 }
 
-FOUNDATION_STATIC_INLINE NSString *default_transformer(Class targetClass)
+FOUNDATION_STATIC_INLINE NSValueTransformer *default_transformer(Class targetClass)
 {
   if ([targetClass isSubclassOfClass:[NSURL class]]) {
-    return PLMURLTransformerName;
+    return PLMURLTransformer();
   }
   return nil;
 }
@@ -442,17 +442,23 @@ static void check_accessor(Class class)
 
   NSString *jsonField = dpAttrs[_PolymorphAttributeJSONField]
     ?: [[NSString stringWithUTF8String:property_getName(property)] lowercaseString];
-  NSString *transformerName = dpAttrs[_PolymorphAttributeTransformer];
-  if (attrs->objectClass && transformerName == nil) {
-    transformerName = default_transformer(attrs->objectClass);
+
+  id transformerAttr = dpAttrs[_PolymorphAttributeTransformer];
+  NSValueTransformer *transformer = nil;
+  if ([transformerAttr isKindOfClass:[NSString class]]) {
+    transformer = [NSValueTransformer valueTransformerForName:transformerAttr];
+  } else if ([transformerAttr isKindOfClass:[NSValueTransformer class]]) {
+    transformer = transformerAttr;
   }
+  if (attrs->objectClass && transformer == nil) {
+    transformer = default_transformer(attrs->objectClass);
+  }
+
   BOOL useKeypath = [dpAttrs[_PolymorphAttributeKeypath] boolValue];
 
   if (useKeypath) {
     NSCAssert(attrs->readonly, @"keypath accessor only support readonly property");
   }
-
-  NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:transformerName];
 
   return getter
     ? inject_getter(self, attrs, jsonField, transformer, useKeypath)

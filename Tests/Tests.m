@@ -13,11 +13,50 @@
 #import "Polymorph.h"
 #import "PLMModel.h"
 #import "PLMArrayTransformer.h"
-#import "NSValueTransformer+TransformerKit.h"
 
-static NSString * const DoubleValueTransformerName = @"DoubleValueTransformerName";
-static NSString * const CGPointTransformerName = @"CGPointTransformerName";
-static NSString * const CGSizeTransformerName = @"CGSizeTransformerName";
+NSValueTransformer *doubleValueTransformer()
+{
+  return [PLMValueTransformer transformerUsingForwardBlock:^id(id value) { return @([value integerValue] * 2); }
+                                              reverseBlock:^id(id value) { return @([value integerValue] / 2); }];
+}
+
+NSValueTransformer *CGPointTransformer()
+{
+  return [PLMValueTransformer transformerUsingForwardBlock:^id(NSDictionary *value) {
+    CGPoint result;
+    return CGPointMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)value, &result)
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+    ? [NSValue valueWithPoint:result] : nil;
+#else
+    ? [NSValue valueWithCGPoint:result] : nil;
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+  } reverseBlock:^id(NSValue *value) {
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+    return CFBridgingRelease(CGPointCreateDictionaryRepresentation(value.pointValue));
+#else
+    return CFBridgingRelease(CGPointCreateDictionaryRepresentation(value.CGPointValue));
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+  }];
+}
+
+NSValueTransformer *CGSizeTransformer()
+{
+  return [PLMValueTransformer transformerUsingForwardBlock:^id(NSDictionary *value) {
+    CGSize result;
+    return CGSizeMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)value, &result)
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+    ? [NSValue valueWithSize:result] : nil;
+#else
+    ? [NSValue valueWithCGSize:result] : nil;
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+  } reverseBlock:^id(NSValue *value) {
+#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
+    return CFBridgingRelease(CGSizeCreateDictionaryRepresentation(value.sizeValue));
+#else
+    return CFBridgingRelease(CGSizeCreateDictionaryRepresentation(value.CGSizeValue));
+#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
+  }];
+}
 
 #define PRIMITIVE_TYPES char, int, short, long, float, double
 
@@ -59,14 +98,14 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 @plm_dynamic_multi(result, url, str, object, isSue, sue);
 @plm_dynamic(isVoted, @"is_voted");
 
-@plm_dynamic(objects, @"objects", PLMArrayTransformerNameForClass([_TypesObject class]));
+@plm_dynamic(objects, @"objects", PLMArrayTransformerForClass([_TypesObject class]));
 
 @plm_dynamic_keypath(keyPathBool, @"key.path");
 
-@plm_dynamic(doubleIt, @"double_it", DoubleValueTransformerName);
+@plm_dynamic(doubleIt, @"double_it", doubleValueTransformer());
 
-@plm_dynamic(point, @"point", CGPointTransformerName)
-@plm_dynamic(size, @"size", CGSizeTransformerName)
+@plm_dynamic(point, @"point", CGPointTransformer())
+@plm_dynamic(size, @"size", CGSizeTransformer())
 
 @plm_dynamic(HTTP)
 
@@ -77,54 +116,6 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 @end
 
 @implementation PolymorphTests
-
-+ (void)load
-{
-  @autoreleasepool {
-    [NSValueTransformer registerValueTransformerWithName:DoubleValueTransformerName
-                                   transformedValueClass:[NSNumber class]
-                      returningTransformedValueWithBlock:^id(id value) { return @([value integerValue] * 2); }
-                  allowingReverseTransformationWithBlock:^id(id value) { return @([value integerValue] / 2); }];
-
-    [NSValueTransformer registerValueTransformerWithName:CGPointTransformerName
-                                   transformedValueClass:[NSValue class]
-                      returningTransformedValueWithBlock:^id(NSDictionary *value) {
-                        CGPoint result;
-                        return CGPointMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)value, &result)
-#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
-                          ? [NSValue valueWithPoint:result] : nil;
-#else
-                          ? [NSValue valueWithCGPoint:result] : nil;
-#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
-                      }
-                  allowingReverseTransformationWithBlock:^id(NSValue *value) {
-#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
-                    return CFBridgingRelease(CGPointCreateDictionaryRepresentation(value.pointValue));
-#else
-                    return CFBridgingRelease(CGPointCreateDictionaryRepresentation(value.CGPointValue));
-#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
-                  }];
-
-    [NSValueTransformer registerValueTransformerWithName:CGSizeTransformerName
-                                   transformedValueClass:[NSValue class]
-                      returningTransformedValueWithBlock:^id(NSDictionary *value) {
-                        CGSize result;
-                        return CGSizeMakeWithDictionaryRepresentation((__bridge CFDictionaryRef)value, &result)
-#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
-                          ? [NSValue valueWithSize:result] : nil;
-#else
-                          ? [NSValue valueWithCGSize:result] : nil;
-#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
-                      }
-                  allowingReverseTransformationWithBlock:^id(NSValue *value) {
-#if TARGET_OS_MAC && ! TARGET_OS_IPHONE
-                    return CFBridgingRelease(CGSizeCreateDictionaryRepresentation(value.sizeValue));
-#else
-                    return CFBridgingRelease(CGSizeCreateDictionaryRepresentation(value.CGSizeValue));
-#endif /* TARGET_OS_MAC && ! TARGET_OS_IPHONE */
-                  }];
-  }
-}
 
 - (void)testPrimitiveTypes
 {

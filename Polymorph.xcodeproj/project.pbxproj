@@ -13,7 +13,6 @@
 		B91E83971C75F718005B19C1 /* PLMURLTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA3C1C48F8EE002D3238 /* PLMURLTransformer.m */; };
 		B91E83981C75F720005B19C1 /* EXTRuntimeExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA511C48F91A002D3238 /* EXTRuntimeExtensions.m */; };
 		B91E83991C75F720005B19C1 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA531C48F91A002D3238 /* EXTScope.m */; };
-		B91E839A1C75F720005B19C1 /* NSValueTransformer+TransformerKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA571C48F91A002D3238 /* NSValueTransformer+TransformerKit.m */; };
 		B91E839D1C75F767005B19C1 /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA441C48F90E002D3238 /* Tests.m */; };
 		B91E839F1C75F767005B19C1 /* TransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B9881D851C5B73BE00A6F07B /* TransformerTests.m */; };
 		B9236D7F1C51CFE5006F646D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9236D7E1C51CFE5006F646D /* AppDelegate.swift */; };
@@ -24,10 +23,11 @@
 		B931AA471C48F90E002D3238 /* libPolymorph.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B931AA2E1C48F8C3002D3238 /* libPolymorph.a */; };
 		B931AA581C48F91A002D3238 /* EXTRuntimeExtensions.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA511C48F91A002D3238 /* EXTRuntimeExtensions.m */; };
 		B931AA591C48F91A002D3238 /* EXTScope.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA531C48F91A002D3238 /* EXTScope.m */; };
-		B931AA5A1C48F91A002D3238 /* NSValueTransformer+TransformerKit.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA571C48F91A002D3238 /* NSValueTransformer+TransformerKit.m */; };
 		B931AA5D1C49359B002D3238 /* PLMArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA5C1C49359B002D3238 /* PLMArrayTransformer.m */; };
 		B931AA631C493F73002D3238 /* PLMModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA621C493F73002D3238 /* PLMModel.m */; };
 		B9881D861C5B73BE00A6F07B /* TransformerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B9881D851C5B73BE00A6F07B /* TransformerTests.m */; };
+		B9A0A1B71C9EC000004DF101 /* PLMValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9A0A1B61C9EC000004DF101 /* PLMValueTransformer.m */; };
+		B9A0A1B81C9EC9BC004DF101 /* PLMValueTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = B9A0A1B61C9EC000004DF101 /* PLMValueTransformer.m */; };
 		B9AAB4781C4BC6A8003AE63D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B9AAB4771C4BC6A8003AE63D /* Assets.xcassets */; };
 		B9AAB47B1C4BC6A8003AE63D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B9AAB4791C4BC6A8003AE63D /* LaunchScreen.storyboard */; };
 		B9AAB4881C4BC773003AE63D /* libPolymorph.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B931AA2E1C48F8C3002D3238 /* libPolymorph.a */; };
@@ -87,13 +87,13 @@
 		B931AA521C48F91A002D3238 /* EXTScope.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EXTScope.h; sourceTree = "<group>"; };
 		B931AA531C48F91A002D3238 /* EXTScope.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EXTScope.m; sourceTree = "<group>"; };
 		B931AA541C48F91A002D3238 /* metamacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = metamacros.h; sourceTree = "<group>"; };
-		B931AA561C48F91A002D3238 /* NSValueTransformer+TransformerKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSValueTransformer+TransformerKit.h"; sourceTree = "<group>"; };
-		B931AA571C48F91A002D3238 /* NSValueTransformer+TransformerKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSValueTransformer+TransformerKit.m"; sourceTree = "<group>"; };
 		B931AA5B1C49359B002D3238 /* PLMArrayTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLMArrayTransformer.h; sourceTree = "<group>"; };
 		B931AA5C1C49359B002D3238 /* PLMArrayTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLMArrayTransformer.m; sourceTree = "<group>"; };
 		B931AA611C493F73002D3238 /* PLMModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLMModel.h; sourceTree = "<group>"; };
 		B931AA621C493F73002D3238 /* PLMModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLMModel.m; sourceTree = "<group>"; };
 		B9881D851C5B73BE00A6F07B /* TransformerTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TransformerTests.m; sourceTree = "<group>"; };
+		B9A0A1B51C9EC000004DF101 /* PLMValueTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLMValueTransformer.h; sourceTree = "<group>"; };
+		B9A0A1B61C9EC000004DF101 /* PLMValueTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLMValueTransformer.m; sourceTree = "<group>"; };
 		B9AAB4691C4BC6A7003AE63D /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9AAB4771C4BC6A8003AE63D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B9AAB47A1C4BC6A8003AE63D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -189,6 +189,8 @@
 				B931AA5C1C49359B002D3238 /* PLMArrayTransformer.m */,
 				B931AA3B1C48F8EE002D3238 /* PLMURLTransformer.h */,
 				B931AA3C1C48F8EE002D3238 /* PLMURLTransformer.m */,
+				B9A0A1B51C9EC000004DF101 /* PLMValueTransformer.h */,
+				B9A0A1B61C9EC000004DF101 /* PLMValueTransformer.m */,
 			);
 			path = Transformers;
 			sourceTree = "<group>";
@@ -207,7 +209,6 @@
 			isa = PBXGroup;
 			children = (
 				B931AA4E1C48F91A002D3238 /* extobjc */,
-				B931AA551C48F91A002D3238 /* TransformerKit */,
 			);
 			path = Library;
 			sourceTree = "<group>";
@@ -223,15 +224,6 @@
 				B931AA541C48F91A002D3238 /* metamacros.h */,
 			);
 			path = extobjc;
-			sourceTree = "<group>";
-		};
-		B931AA551C48F91A002D3238 /* TransformerKit */ = {
-			isa = PBXGroup;
-			children = (
-				B931AA561C48F91A002D3238 /* NSValueTransformer+TransformerKit.h */,
-				B931AA571C48F91A002D3238 /* NSValueTransformer+TransformerKit.m */,
-			);
-			path = TransformerKit;
 			sourceTree = "<group>";
 		};
 		B9AAB46A1C4BC6A8003AE63D /* Example */ = {
@@ -420,11 +412,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B9A0A1B81C9EC9BC004DF101 /* PLMValueTransformer.m in Sources */,
 				B91E839D1C75F767005B19C1 /* Tests.m in Sources */,
 				B91E839F1C75F767005B19C1 /* TransformerTests.m in Sources */,
 				B91E83981C75F720005B19C1 /* EXTRuntimeExtensions.m in Sources */,
 				B91E83991C75F720005B19C1 /* EXTScope.m in Sources */,
-				B91E839A1C75F720005B19C1 /* NSValueTransformer+TransformerKit.m in Sources */,
 				B91E83941C75F718005B19C1 /* Polymorph.m in Sources */,
 				B91E83951C75F718005B19C1 /* PLMModel.m in Sources */,
 				B91E83961C75F718005B19C1 /* PLMArrayTransformer.m in Sources */,
@@ -437,10 +429,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				B931AA591C48F91A002D3238 /* EXTScope.m in Sources */,
+				B9A0A1B71C9EC000004DF101 /* PLMValueTransformer.m in Sources */,
 				B931AA341C48F8C3002D3238 /* Polymorph.m in Sources */,
 				B931AA581C48F91A002D3238 /* EXTRuntimeExtensions.m in Sources */,
 				B931AA5D1C49359B002D3238 /* PLMArrayTransformer.m in Sources */,
-				B931AA5A1C48F91A002D3238 /* NSValueTransformer+TransformerKit.m in Sources */,
 				B931AA631C493F73002D3238 /* PLMModel.m in Sources */,
 				B931AA3D1C48F8EE002D3238 /* PLMURLTransformer.m in Sources */,
 			);

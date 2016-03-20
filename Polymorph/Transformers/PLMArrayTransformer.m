@@ -9,7 +9,7 @@
 #include <objc/runtime.h>
 
 #import "PLMArrayTransformer.h"
-#import "NSValueTransformer+TransformerKit.h"
+#import "PLMValueTransformer.h"
 #import "Polymorph.h"
 
 static NSArray *transform_array(NSArray *array, NSValueTransformer *transformer, BOOL reverse)
@@ -24,24 +24,38 @@ static NSArray *transform_array(NSArray *array, NSValueTransformer *transformer,
   return results;
 }
 
+FOUNDATION_EXTERN NSValueTransformer *PLMArrayTransformer(NSValueTransformer *elementTransformer)
+{
+  return [PLMValueTransformer transformerUsingForwardBlock:^id(NSArray *array) {
+    return transform_array(array, elementTransformer, NO);
+  } reverseBlock:^id(NSArray *array) {
+    return transform_array(array, elementTransformer, YES);
+  }];
+}
+
+FOUNDATION_EXTERN NSValueTransformer *PLMArrayTransformerForClass(Class clazz)
+{
+  NSCParameterAssert([clazz conformsToProtocol:@protocol(PLMRawDataProvider)]);
+
+  NSValueTransformer *transformer =
+    [PLMValueTransformer transformerUsingForwardBlock:^id(id value) {
+      NSCParameterAssert([value isKindOfClass:[NSDictionary class]]);
+      return [clazz objectWithPolymorphRawData:[value mutableCopy]];
+    } reverseBlock:^id(id value) {
+      return [value polymorphRawData];
+    }];
+  return PLMArrayTransformer(transformer);
+}
+
 NSString *PLMArrayTransformerName(NSString *elementTransformerName)
 {
   NSString *name = [NSString stringWithFormat:@"PLMArrayTransformer_%@", elementTransformerName];
-  NSValueTransformer *transformer = [NSValueTransformer valueTransformerForName:elementTransformerName];
-
-  id (^reverse)(NSArray *) = nil;
-
-  if ([[transformer class] allowsReverseTransformation]) {
-    reverse = ^id(NSArray *array) {
-      return transform_array(array, transformer, YES);
-    };
+  if ([NSValueTransformer valueTransformerForName:name]) {
+    return name;
   }
-  [NSValueTransformer registerValueTransformerWithName:name
-                                 transformedValueClass:[NSArray class]
-                    returningTransformedValueWithBlock:^id(NSArray *array) {
-                      return transform_array(array, transformer, NO);
-                    }
-                allowingReverseTransformationWithBlock:reverse];
+
+  NSValueTransformer *transformer = PLMArrayTransformer([NSValueTransformer valueTransformerForName:elementTransformerName]);
+  [NSValueTransformer setValueTransformer:transformer forName:name];
 
   return name;
 }
@@ -52,15 +66,9 @@ NSString *PLMArrayTransformerNameForClass(Class clazz)
 
   NSString *name = [@"PLMTransformer" stringByAppendingString:NSStringFromClass(clazz)];
 
-  [NSValueTransformer registerValueTransformerWithName:name
-                                 transformedValueClass:clazz
-                    returningTransformedValueWithBlock:^id(id value) {
-                      NSCParameterAssert([value isKindOfClass:[NSDictionary class]]);
-                      return [clazz objectWithPolymorphRawData:[value mutableCopy]];
-                    }
-                allowingReverseTransformationWithBlock:^id(id value) {
-                  return [value polymorphRawData];
-                }];
+  if ([NSValueTransformer valueTransformerForName:name] == nil) {
+    [NSValueTransformer setValueTransformer:PLMArrayTransformerForClass(clazz) forName:name];
+  }
 
   return PLMArrayTransformerName(name);
 }

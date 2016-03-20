@@ -13,6 +13,6 @@
 @implementation MovieResult
 
 @plm_dynamic_multi(start, count, total)
-@plm_dynamic(movies, @"subjects", PLMArrayTransformerNameForClass([Movie class]))
+@plm_dynamic(movies, @"subjects", PLMArrayTransformerForClass([Movie class]))
 
 @end

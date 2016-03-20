@@ -20,6 +20,5 @@ Pod::Spec.new do |s|
 
   s.dependency "libextobjc/EXTScope", "~> 0.4"
   s.dependency "libextobjc/RuntimeExtensions", "~> 0.4"
-  s.dependency "TransformerKit/Core", "~> 0.5"
 
 end

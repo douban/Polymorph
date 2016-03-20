@@ -7,26 +7,22 @@
 //
 
 #import "Commit.h"
-#import "NSValueTransformer+TransformerKit.h"
 
 @implementation Commit
 
-+ (void)load
++ (NSValueTransformer *)dateTransformer
 {
-  @autoreleasepool {
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
-    formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
-    [NSValueTransformer registerValueTransformerWithName:@"ISO8601DateTransformer"
-                                   transformedValueClass:[NSDate class]
-                      returningTransformedValueWithBlock:^id(id value) { return [formatter dateFromString:value]; }
-                  allowingReverseTransformationWithBlock:^id(id value) { return [formatter stringFromDate:value]; }];
-  }
+  NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+  formatter.dateFormat = @"yyyy-MM-dd'T'HH:mm:ssZ";
+  formatter.locale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US_POSIX"];
+  return [PLMValueTransformer
+          transformerUsingForwardBlock:^id(id value) { return [formatter dateFromString:value]; }
+          reverseBlock:^id(id value) { return [formatter stringFromDate:value]; }];
 }
 
 @plm_dynamic(sha)
 @plm_dynamic_keypath(message, @"commit.message")
-@plm_dynamic_keypath(date, @"commit.committer.date", @"ISO8601DateTransformer")
+@plm_dynamic_keypath(date, @"commit.committer.date", [self dateTransformer])
 @plm_dynamic(diffURL, @"html_url")
 
 @end

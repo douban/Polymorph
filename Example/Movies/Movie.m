@@ -27,11 +27,11 @@
 
 // `directors` comes from `directors` field, the object array will be transformed
 // to NSArray with Celebrity instance。
-@plm_dynamic(directors, @"directors", PLMArrayTransformerNameForClass([Celebrity class]))
+@plm_dynamic(directors, @"directors", PLMArrayTransformerForClass([Celebrity class]))
 
 // `casts` comes from `casts` field. Field value, which is an object array, will
 // be transformed to NSArray with Celebrity instance.
-@plm_dynamic(casts, @"casts", PLMArrayTransformerNameForClass([Celebrity class]))
+@plm_dynamic(casts, @"casts", PLMArrayTransformerForClass([Celebrity class]))
 
 // `poster` comes from `images.small` keypath. Field value will be transformed
 // to `NSURL` automatically.
