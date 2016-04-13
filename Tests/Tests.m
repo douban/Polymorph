@@ -70,6 +70,7 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 @property (nonatomic, strong) NSString *str;
 @property (nonatomic, strong) NSURL *url;
 @property (nonatomic, strong) _TypesObject *object;
+@property (nonatomic, strong) _TypesObject *emptyObject;
 
 @property (nonatomic, copy) NSArray *objects;
 
@@ -87,6 +88,15 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 @property (nonatomic, assign) BOOL HTTP;
 
 @end
+
+NSValueTransformer *EmptyObjectTransformer()
+{
+  return [PLMValueTransformer transformerUsingForwardBlock:^id _Nullable(id  _Nullable value) {
+    return [_TypesObject new];
+  } reverseBlock:^id _Nullable(id  _Nullable value) {
+    return @{};
+  }];
+}
 
 @implementation _TypesObject
 
@@ -108,6 +118,8 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 @plm_dynamic(size, @"size", CGSizeTransformer())
 
 @plm_dynamic(HTTP)
+
+@plm_dynamic(emptyObject, @"empty", EmptyObjectTransformer())
 
 @end
 
@@ -150,6 +162,13 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:json];
   XCTAssertTrue([object.url isKindOfClass:[NSURL class]]);
   XCTAssertEqual(object.url.absoluteString, json[@"url"]);
+}
+
+- (void)testObjectTransformation
+{
+  _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"empty": @{@"intValue": @100}}];
+  XCTAssertEqual(object.emptyObject.dictionary.count, 0);
+  XCTAssertEqual(object.emptyObject.intValue, 0);
 }
 
 - (void)testStruct

@@ -137,6 +137,14 @@ FOUNDATION_STATIC_INLINE NSValueTransformer *default_transformer(Class targetCla
 {
   if ([targetClass isSubclassOfClass:[NSURL class]]) {
     return PLMURLTransformer();
+  } else if ([targetClass conformsToProtocol:@protocol(PLMRawDataProvider)]) {
+    return [PLMValueTransformer transformerUsingForwardBlock:^id(NSDictionary *value) {
+      return [value isKindOfClass:[NSDictionary class]]
+        ? [targetClass objectWithPolymorphRawData:[value mutableCopy]]
+        : nil;
+    } reverseBlock:^id (id<PLMRawDataProvider> value) {
+      return [value respondsToSelector:@selector(polymorphRawData)] ? value.polymorphRawData : nil;
+    }];
   }
   return nil;
 }
@@ -159,10 +167,7 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
     value = nil;
   }
 
-  if ([value isKindOfClass:[NSDictionary class]]
-      && [targetClass conformsToProtocol:@protocol(PLMRawDataProvider)]) {
-    value = [targetClass objectWithPolymorphRawData:[value mutableCopy]];
-  } else if (transformer) {
+  if (transformer) {
     value = [transformer transformedValue:value];
   }
 
@@ -243,9 +248,7 @@ static void setter_impl(NSObject<PLMRawDataProvider> *self,
 {
   objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
-  if ([[value class] conformsToProtocol:@protocol(PLMRawDataProvider)]) {
-    value = [(NSObject<PLMRawDataProvider> *)value polymorphRawData];
-  } else if (transformer) {
+  if (transformer) {
     value = [transformer reverseTransformedValue:value];
   }
 
