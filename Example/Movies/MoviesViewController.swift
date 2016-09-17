@@ -18,45 +18,49 @@ class MoviesViewController: UITableViewController {
     title = "正在热映";
     tableView.rowHeight = 60
 
-    NSURLSession.sharedSession().dataTaskWithRequest(NSURLRequest(URL: NSURL(string: "https://api.douban.com/v2/movie/in_theaters")!)) {
+    URLSession.shared.dataTask(with: URLRequest(url: URL(string: "https://api.douban.com/v2/movie/in_theaters")!), completionHandler: {
       (data, _, _) in
       guard let data = data,
-        let json = try? NSJSONSerialization.JSONObjectWithData(data, options: []) as? [NSObject: AnyObject]
+        let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [AnyHashable: Any]
         else {
           return
       }
 
       self.inTheaterMovies = MovieResult(dictionary: json)
-      self.tableView .performSelectorOnMainThread("reloadData", withObject: nil, waitUntilDone: false)
-    }.resume()
+      self.tableView .performSelector(onMainThread: #selector(UICollectionView.reloadData), with: nil, waitUntilDone: false)
+    }) .resume()
   }
 
 }
 
 extension MoviesViewController {
 
-  override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return inTheaterMovies?.movies.count ?? 0
   }
 
-  override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    guard let movie = inTheaterMovies?.movies[indexPath.row] else { return UITableViewCell() }
+  override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    guard let movie = inTheaterMovies?.movies[(indexPath as NSIndexPath).row] else { return UITableViewCell() }
 
-    var cell = tableView.dequeueReusableCellWithIdentifier("cell")
+    var cell = tableView.dequeueReusableCell(withIdentifier: "cell")
     if cell == nil {
-      cell = UITableViewCell(style: .Subtitle, reuseIdentifier: "cell")
+      cell = UITableViewCell(style: .subtitle, reuseIdentifier: "cell")
     }
     cell?.textLabel?.text = movie.title
     cell?.detailTextLabel?.text = String(format: "评分：%.1f", movie.rating)
     return cell!
   }
 
-  override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    guard let movie = inTheaterMovies?.movies[indexPath.row],
-      let url = NSURL(string: "https://m.douban.com/movie/subject/")?.URLByAppendingPathComponent(movie.identifier)
+  override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard let movie = inTheaterMovies?.movies[(indexPath as NSIndexPath).row],
+      let url = URL(string: "https://m.douban.com/movie/subject/")?.appendingPathComponent(movie.identifier)
       else { return }
 
-    presentViewController(SFSafariViewController(URL: url), animated: true, completion: nil)
+    if #available(iOS 9.0, *) {
+      present(SFSafariViewController(url: url), animated: true, completion: nil)
+    } else {
+      // Fallback on earlier versions
+    }
   }
 
 }
