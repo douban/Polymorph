@@ -17,20 +17,20 @@ private struct Example {
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
-  private let examples = [
+  fileprivate let examples = [
     Example(name: "Commits", viewController: CommitsViewController.self),
     Example(name: "正在热映", viewController: MoviesViewController.self),
   ]
 
-  func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject : AnyObject]?) -> Bool {
+  func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
     let tableVC = UITableViewController()
     tableVC.title = "Examples"
     tableVC.tableView.delegate = self
     tableVC.tableView.dataSource = self
-    tableVC.tableView.registerClass(UITableViewCell.self, forCellReuseIdentifier: "cell")
+    tableVC.tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
 
-    window = UIWindow(frame: UIScreen.mainScreen().bounds)
-    window?.backgroundColor = .whiteColor()
+    window = UIWindow(frame: UIScreen.main.bounds)
+    window?.backgroundColor = .white
     window?.rootViewController = UINavigationController(rootViewController: tableVC)
     window?.makeKeyAndVisible()
 
@@ -41,20 +41,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 extension AppDelegate: UITableViewDataSource, UITableViewDelegate {
 
-  func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
     return examples.count
   }
 
-  func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-    cell.accessoryType = .DisclosureIndicator
-    cell.textLabel?.text = examples[indexPath.row].name
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
+    cell.accessoryType = .disclosureIndicator
+    cell.textLabel?.text = examples[(indexPath as NSIndexPath).row].name
     return cell
   }
 
-  func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     (self.window?.rootViewController as? UINavigationController)?
-      .pushViewController(examples[indexPath.row].viewController.init(), animated: true)
+      .pushViewController(examples[(indexPath as NSIndexPath).row].viewController.init(), animated: true)
   }
 
 }
