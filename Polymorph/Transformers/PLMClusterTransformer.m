@@ -11,7 +11,7 @@
 
 @interface PLMClusterTransformer()
 
-@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableSet<Class> *> *transformers;
+@property (nonatomic, strong) NSMutableDictionary<NSString *, NSMutableSet<Class> *> *transformers; // Dictionary stores registerd superclass and subclasses bindings. Key: superclass name. Value: Mutableset of subclasses
 
 @end
 
