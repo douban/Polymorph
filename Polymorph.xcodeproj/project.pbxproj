@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F3C7D571E822EC300494BAF /* PLMClusterTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F3C7D561E822EC300494BAF /* PLMClusterTransformer.m */; };
 		B91E83941C75F718005B19C1 /* Polymorph.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA331C48F8C3002D3238 /* Polymorph.m */; };
 		B91E83951C75F718005B19C1 /* PLMModel.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA621C493F73002D3238 /* PLMModel.m */; };
 		B91E83961C75F718005B19C1 /* PLMArrayTransformer.m in Sources */ = {isa = PBXBuildFile; fileRef = B931AA5C1C49359B002D3238 /* PLMArrayTransformer.m */; };
@@ -70,6 +71,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3F3C7D551E822EC300494BAF /* PLMClusterTransformer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PLMClusterTransformer.h; sourceTree = "<group>"; };
+		3F3C7D561E822EC300494BAF /* PLMClusterTransformer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PLMClusterTransformer.m; sourceTree = "<group>"; };
 		B91E838C1C75F6FA005B19C1 /* PolymorphTests OSX.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "PolymorphTests OSX.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9236D7E1C51CFE5006F646D /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B9236D821C51D18C006F646D /* Bridge-Swift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Bridge-Swift.h"; sourceTree = "<group>"; };
@@ -191,6 +194,8 @@
 				B931AA3C1C48F8EE002D3238 /* PLMURLTransformer.m */,
 				B9A0A1B51C9EC000004DF101 /* PLMValueTransformer.h */,
 				B9A0A1B61C9EC000004DF101 /* PLMValueTransformer.m */,
+				3F3C7D551E822EC300494BAF /* PLMClusterTransformer.h */,
+				3F3C7D561E822EC300494BAF /* PLMClusterTransformer.m */,
 			);
 			path = Transformers;
 			sourceTree = "<group>";
@@ -430,6 +435,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F3C7D571E822EC300494BAF /* PLMClusterTransformer.m in Sources */,
 				B931AA591C48F91A002D3238 /* EXTScope.m in Sources */,
 				B9A0A1B71C9EC000004DF101 /* PLMValueTransformer.m in Sources */,
 				B931AA341C48F8C3002D3238 /* Polymorph.m in Sources */,
