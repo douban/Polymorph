@@ -1,0 +1,22 @@
+PODS:
+  - libextobjc/EXTScope (0.4.1):
+    - libextobjc/RuntimeExtensions
+  - libextobjc/RuntimeExtensions (0.4.1)
+  - Polymorph (1.0.6):
+    - libextobjc/EXTScope (~> 0.4)
+    - libextobjc/RuntimeExtensions (~> 0.4)
+
+DEPENDENCIES:
+  - Polymorph (from `../`)
+
+EXTERNAL SOURCES:
+  Polymorph:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
+  Polymorph: 0741a08aa8ee8e38ac48a2ad86f5fad60136ef48
+
+PODFILE CHECKSUM: 526714efcecbad1112b3632e8af7933839afc424
+
+COCOAPODS: 1.2.0
