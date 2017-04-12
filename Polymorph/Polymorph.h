@@ -6,15 +6,13 @@
 //  Copyright © 2016 Douban Inc. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
+#include <libextobjc/metamacros.h>
 
 #import "PLMRawDataProvider.h"
 #import "PLMModel.h"
 #import "PLMValueTransformer.h"
 #import "PLMArrayTransformer.h"
 #import "PLMURLTransformer.h"
-
-#import "metamacros.h"
 
 /**
  *  Associate property with field in dictionary.

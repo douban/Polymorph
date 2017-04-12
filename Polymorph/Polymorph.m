@@ -13,10 +13,10 @@
 #endif
 
 #include <objc/runtime.h>
+#import <libextobjc/EXTRuntimeExtensions.h>
+#import <libextobjc/EXTScope.h>
 
 #import "Polymorph.h"
-#import "EXTRuntimeExtensions.h"
-#import "EXTScope.h"
 #import "PLMURLTransformer.h"
 
 #define PLMLog NSLog

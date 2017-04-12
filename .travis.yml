@@ -1,7 +1,7 @@
 language: objective-c
-osx_image: xcode7.2
+osx_image: xcode8
+podfile: Example/Podfile
 script:
-    - xctool -sdk iphonesimulator -project Polymorph.xcodeproj -scheme "PolymorphTests iOS" test GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
-    - xctool -sdk macosx -project Polymorph.xcodeproj -scheme "PolymorphTests OSX" test GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
-after_success:
-    - bash <(curl -s https://codecov.io/bash)
+  - xcodebuild -workspace Example/Polymorph.xcworkspace -scheme Polymorph-Example -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone SE,OS=10.0' build test
+  - bash <(curl -s https://codecov.io/bash)
+  - pod lib lint
