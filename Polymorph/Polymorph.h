@@ -14,7 +14,11 @@
 #import "PLMArrayTransformer.h"
 #import "PLMURLTransformer.h"
 
+#if __has_include("metamacros.h")
 #import "metamacros.h"
+#elif __has_include(<libextobjc/metamacros.h>)
+#import <libextobjc/metamacros.h>
+#endif
 
 /**
  *  Associate property with field in dictionary.
