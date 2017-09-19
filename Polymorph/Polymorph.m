@@ -154,6 +154,7 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
                       NSValueTransformer *transformer,
                       Class targetClass,
                       BOOL useKeypath,
+                      BOOL isNullable,
                       const void *key)
 {
   id value = objc_getAssociatedObject(self, key);
@@ -171,6 +172,15 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
     value = [transformer transformedValue:value];
   }
 
+  if (!value && !isNullable) {
+    if (targetClass == [NSNumber class]) {
+      value = [NSNumber numberWithInt:0];
+    }
+    else {
+      value = [[targetClass alloc] init];
+    }
+  }
+
   safety_type_check(value, targetClass);
 
   objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
@@ -182,7 +192,8 @@ static BOOL inject_getter(Class cls,
                           ext_propertyAttributes *attrs,
                           NSString *jsonFieldName,
                           NSValueTransformer *transformer,
-                          BOOL useKeypath)
+                          BOOL useKeypath,
+                          BOOL isNullable)
 {
   NSCParameterAssert(attrs != nil && jsonFieldName != nil);
 
@@ -210,7 +221,7 @@ static BOOL inject_getter(Class cls,
     SEL name = attrs->getter;
     Class targetClass = attrs->objectClass;
     getter = ^(NSObject<PLMRawDataProvider> *self_) {
-      return getter_impl(self_, jsonFieldName, transformer, targetClass, useKeypath, name);
+      return getter_impl(self_, jsonFieldName, transformer, targetClass, useKeypath, isNullable, name);
     };
   }
   PRIMITIVE_GETTERS(char, charValue, int, intValue, short, shortValue,
@@ -444,7 +455,7 @@ static void check_accessor(Class class)
 #pragma clang diagnostic pop
 
   NSString *jsonField = dpAttrs[_PolymorphAttributeJSONField]
-    ?: [[NSString stringWithUTF8String:property_getName(property)] lowercaseString];
+  ?: [[NSString stringWithUTF8String:property_getName(property)] lowercaseString];
 
   id transformerAttr = dpAttrs[_PolymorphAttributeTransformer];
   NSValueTransformer *transformer = nil;
@@ -463,9 +474,12 @@ static void check_accessor(Class class)
     NSCAssert(attrs->readonly, @"keypath accessor only support readonly property");
   }
 
+  BOOL isNullable = [dpAttrs[_PolymorphAttributeNullable] boolValue];
+
   return getter
-    ? inject_getter(self, attrs, jsonField, transformer, useKeypath)
-    : inject_setter(self, attrs, jsonField, transformer);
+  ? inject_getter(self, attrs, jsonField, transformer, useKeypath, isNullable)
+  : inject_setter(self, attrs, jsonField, transformer);
 }
 
 @end
+

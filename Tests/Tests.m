@@ -87,6 +87,13 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 
 @property (nonatomic, assign) BOOL HTTP;
 
+@property (nonatomic, strong, nullable) NSNumber *nilNumber;
+@property (nonatomic, assign) NSInteger nonnullInt;
+@property (nonatomic, strong) NSNumber *nonnullNumber;
+@property (nonatomic, nullable, copy) NSString *nilString;
+@property (nonatomic, nullable, copy) NSString *nilString2;
+@property (nonatomic, nonnull, copy) NSString *nonnullString;
+
 @end
 
 NSValueTransformer *EmptyObjectTransformer()
@@ -121,6 +128,14 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic(emptyObject, @"empty", EmptyObjectTransformer())
 
+@plm_nullable_dynamic(nilString)
+@plm_nullable_dynamic(nilString2, @"nil_string2")
+
+@plm_dynamic(nonnullString, @"nonnull_string")
+@plm_dynamic(nonnullInt)
+@plm_dynamic(nonnullNumber)
+@plm_nullable_dynamic(nilNumber)
+
 @end
 
 @interface PolymorphTests : XCTestCase
@@ -154,6 +169,17 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
   XCTAssertEqual(object.doubleIt, 200);
   object.doubleIt = 500;
   XCTAssertEqual(object.doubleIt, 500);
+}
+
+- (void)testNullable
+{
+  _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{}];
+  XCTAssertNil(object.nilString);
+  XCTAssertNil(object.nilString2);
+  XCTAssertNotNil(object.nonnullString);
+  XCTAssert(object.nonnullInt == 0);
+  XCTAssertNotNil(object.nonnullNumber);
+  XCTAssertNil(object.nilNumber);
 }
 
 - (void)testObjectTypes
@@ -270,7 +296,7 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"is_voted": [NSNull null], @"url": [NSNull null]}];
   XCTAssertEqual(object.isVoted, NO);
-  XCTAssertNil(object.url);
+  XCTAssertNotNil(object.url);
 }
 
 - (void)testKeypath

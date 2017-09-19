@@ -81,9 +81,23 @@
  *
  *      @plm_dynamic(date, GMTDateTransformerName)
  *
- *
+ *  Note:
+ *  Only plm_nullable_dynamic(...) and plm_nullable_dynamic_keypath(...) may return nil, the others will always
+ *  return a nonnull value. So it is recommended to use plm_nullable_dynamic_xxx for `nullable` property and
+ *  plm_dynamic_xxx for `nonnull` property.
  */
 #define plm_dynamic(...)  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), {_plm_dynamic_attr(__VA_ARGS__);})
+
+#define plm_nullable_dynamic(...) \
+  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
+    NSDictionary *attrs = (NSDictionary *)_plm_dynamic_attr(__VA_ARGS__); \
+    if (!attrs) { \
+      attrs = [NSDictionary dictionary]; \
+    } \
+    NSMutableDictionary *mutAttrs = [attrs mutableCopy]; \
+    mutAttrs[_PolymorphAttributeNullable] = @YES; \
+    mutAttrs; \
+  })
 
 /**
  *  Same arguments as `plm_dynamic`, except the field name specified by second
@@ -96,6 +110,14 @@
   _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
     NSMutableDictionary *attrs = [_plm_dynamic_attr(__VA_ARGS__) mutableCopy]; \
     attrs[_PolymorphAttributeKeypath] = @YES; \
+    attrs; \
+  })
+
+#define plm_nullable_dynamic_keypath(...) \
+  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
+    NSMutableDictionary *attrs = [_plm_dynamic_attr(__VA_ARGS__) mutableCopy]; \
+    attrs[_PolymorphAttributeKeypath] = @YES; \
+    attrs[_PolymorphAttributeNullable] = @YES; \
     attrs; \
   })
 
@@ -142,6 +164,7 @@
 #define _PolymorphAttributeJSONField     @"fd"
 #define _PolymorphAttributeTransformer   @"tf"
 #define _PolymorphAttributeKeypath       @"kp"
+#define _PolymorphAttributeNullable      @"nb"
 
 #define _plm_dynamic_attr(...) metamacro_concat(_plm_dynamic_attr, metamacro_argcount(__VA_ARGS__))(__VA_ARGS__)
 
