@@ -27,6 +27,10 @@
     VAR = nil; \
   }
 
+#ifdef DEBUG
+static BOOL isRunningTest();
+#endif
+
 /**
  *  Parse property name from getter method name.
  *
@@ -173,6 +177,13 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
   }
 
   if (!value && !isNullable) {
+
+#ifdef DEBUG
+    if (!isRunningTest()) {
+      NSCAssert(NO, @"nonnull property should not be nill");
+    }
+#endif
+
     if (targetClass == [NSNumber class]) {
       value = [NSNumber numberWithInt:0];
     }
@@ -375,6 +386,12 @@ static void check_accessor(Class class)
   if (classes) {
     free(classes);
   }
+}
+
+static BOOL isRunningTest()
+{
+  NSDictionary *environment = [[NSProcessInfo processInfo] environment];
+  return [environment[@"TEST"] boolValue];
 }
 
 #endif /* defined DEBUG */
