@@ -244,9 +244,28 @@ static void setter_impl(NSObject<PLMRawDataProvider> *self,
                         NSString *jsonField,
                         id value,
                         NSValueTransformer *transformer,
+                        ext_propertyMemoryManagementPolicy memMgtPolicy,
                         const void *key)
 {
-  objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_AssociationPolicy policy;
+  switch (memMgtPolicy) {
+    case ext_propertyMemoryManagementPolicyAssign:
+      policy = OBJC_ASSOCIATION_ASSIGN;
+      break;
+
+    case ext_propertyMemoryManagementPolicyRetain:
+      policy = OBJC_ASSOCIATION_RETAIN_NONATOMIC;
+      break;
+
+    case ext_propertyMemoryManagementPolicyCopy:
+      policy = OBJC_ASSOCIATION_COPY_NONATOMIC;
+      break;
+
+    default:
+      policy = OBJC_ASSOCIATION_RETAIN_NONATOMIC;
+      break;
+  }
+  objc_setAssociatedObject(self, key, value, policy);
 
   if (transformer) {
     value = [transformer reverseTransformedValue:value];
@@ -291,8 +310,7 @@ static BOOL inject_setter(Class cls,
     ext_propertyMemoryManagementPolicy mmp = attrs->memoryManagementPolicy;
     SEL name = attrs->getter;
     setter = ^(NSObject<PLMRawDataProvider> *self_, id value) {
-      value = mmp == ext_propertyMemoryManagementPolicyCopy ? [value copy] : value;
-      return setter_impl(self_, jsonFieldName, value, transformer, name);
+      return setter_impl(self_, jsonFieldName, value, transformer, mmp, name);
     };
   }
   PRIMITIVE_SETTERS(         char,          int,          short,          long,          long long,
