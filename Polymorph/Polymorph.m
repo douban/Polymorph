@@ -133,6 +133,23 @@ static ext_propertyAttributes *copy_property_attrs(Class cls,
   return attrs;
 }
 
+objc_AssociationPolicy transformPropertyMemPolicy(ext_propertyMemoryManagementPolicy policy, BOOL nonatomic)
+{
+  switch (policy) {
+    case ext_propertyMemoryManagementPolicyAssign:
+      return OBJC_ASSOCIATION_ASSIGN;
+
+    case ext_propertyMemoryManagementPolicyRetain:
+      return nonatomic ? OBJC_ASSOCIATION_RETAIN_NONATOMIC : OBJC_ASSOCIATION_RETAIN;
+
+    case ext_propertyMemoryManagementPolicyCopy:
+      return nonatomic ? OBJC_ASSOCIATION_COPY_NONATOMIC : OBJC_ASSOCIATION_COPY;
+
+    default:
+      return OBJC_ASSOCIATION_RETAIN_NONATOMIC;
+  }
+}
+
 FOUNDATION_STATIC_INLINE NSValueTransformer *default_transformer(Class targetClass)
 {
   if ([targetClass isSubclassOfClass:[NSURL class]]) {
@@ -244,9 +261,11 @@ static void setter_impl(NSObject<PLMRawDataProvider> *self,
                         NSString *jsonField,
                         id value,
                         NSValueTransformer *transformer,
+                        ext_propertyMemoryManagementPolicy memMgtPolicy,
+                        BOOL nonatomic,
                         const void *key)
 {
-  objc_setAssociatedObject(self, key, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  objc_setAssociatedObject(self, key, value, transformPropertyMemPolicy(memMgtPolicy, nonatomic));
 
   if (transformer) {
     value = [transformer reverseTransformedValue:value];
@@ -289,10 +308,10 @@ static BOOL inject_setter(Class cls,
 
   if (attrs->type[0] == '@') {
     ext_propertyMemoryManagementPolicy mmp = attrs->memoryManagementPolicy;
+    BOOL nonatomic = attrs->nonatomic;
     SEL name = attrs->getter;
     setter = ^(NSObject<PLMRawDataProvider> *self_, id value) {
-      value = mmp == ext_propertyMemoryManagementPolicyCopy ? [value copy] : value;
-      return setter_impl(self_, jsonFieldName, value, transformer, name);
+      return setter_impl(self_, jsonFieldName, value, transformer, mmp, nonatomic, name);
     };
   }
   PRIMITIVE_SETTERS(         char,          int,          short,          long,          long long,
