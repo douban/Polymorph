@@ -128,13 +128,13 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic(emptyObject, @"empty", EmptyObjectTransformer())
 
-@plm_nullable_dynamic(nilString)
-@plm_nullable_dynamic(nilString2, @"nil_string2")
+@plm_dynamic_nullable(nilString)
+@plm_dynamic_nullable(nilString2, @"nil_string2")
 
 @plm_dynamic(nonnullString, @"nonnull_string")
 @plm_dynamic(nonnullInt)
 @plm_dynamic(nonnullNumber)
-@plm_nullable_dynamic(nilNumber)
+@plm_dynamic_nullable(nilNumber)
 
 @end
 

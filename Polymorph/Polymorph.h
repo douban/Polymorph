@@ -82,13 +82,13 @@
  *      @plm_dynamic(date, GMTDateTransformerName)
  *
  *  Note:
- *  Only plm_nullable_dynamic(...) and plm_nullable_dynamic_keypath(...) may return nil, the others will always
- *  return a nonnull value. So it is recommended to use plm_nullable_dynamic_xxx for `nullable` property and
+ *  Only plm_dynamic_nullable(...) and plm_dynamic_nullable_keypath(...) may return nil, the others will always
+ *  return a nonnull value. So it is recommended to use plm_dynamic_nullable_xxx for `nullable` property and
  *  plm_dynamic_xxx for `nonnull` property.
  */
 #define plm_dynamic(...)  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), {_plm_dynamic_attr(__VA_ARGS__);})
 
-#define plm_nullable_dynamic(...) \
+#define plm_dynamic_nullable(...) \
   _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
     NSDictionary *attrs = (NSDictionary *)_plm_dynamic_attr(__VA_ARGS__); \
     if (!attrs) { \
@@ -113,7 +113,7 @@
     attrs; \
   })
 
-#define plm_nullable_dynamic_keypath(...) \
+#define plm_dynamic_nullable_keypath(...) \
   _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
     NSMutableDictionary *attrs = [_plm_dynamic_attr(__VA_ARGS__) mutableCopy]; \
     attrs[_PolymorphAttributeKeypath] = @YES; \
