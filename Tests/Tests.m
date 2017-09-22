@@ -87,12 +87,17 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 
 @property (nonatomic, assign) BOOL HTTP;
 
-@property (nonatomic, strong, nullable) NSNumber *nilNumber;
-@property (nonatomic, assign) NSInteger nonnullInt;
+@property (nonatomic, strong) NSNumber *normalNumbler;
 @property (nonatomic, strong) NSNumber *nonnullNumber;
-@property (nonatomic, nullable, copy) NSString *nilString;
-@property (nonatomic, nullable, copy) NSString *nilString2;
+@property (nonatomic, strong, nullable) NSNumber *nilNumber;
+@property (nonatomic, strong, nonnull, readonly) NSNumber *keypathNonnullNumber;
+@property (nonatomic, strong, nullable, readonly) NSNumber *keypathNilNumber;
+
+@property (nonatomic, copy) NSString *normalString;
 @property (nonatomic, nonnull, copy) NSString *nonnullString;
+@property (nonatomic, nullable, copy) NSString *nilString;
+@property (nonatomic, copy, nonnull, readonly) NSString *keypathNonnullString;
+@property (nonatomic, copy, nullable, readonly) NSString *keypathNilString;
 
 @end
 
@@ -128,13 +133,17 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic(emptyObject, @"empty", EmptyObjectTransformer())
 
-@plm_dynamic_nullable(nilString)
-@plm_dynamic_nullable(nilString2, @"nil_string2")
+@plm_dynamic(normalNumbler)
+@plm_dynamic_nonnull(nonnullNumber, @"nonnull_number", [NSNumber numberWithInteger:20])
+@plm_dynamic_nullable(nilNumber, @"nil_number")
+@plm_dynamic_nonnull_keypath(keypathNonnullNumber, @"xxx", [NSNumber numberWithInteger:20])
+@plm_dynamic_nullable_keypath(keypathNilNumber, @"xxx")
 
-@plm_dynamic(nonnullString, @"nonnull_string")
-@plm_dynamic(nonnullInt)
-@plm_dynamic(nonnullNumber)
-@plm_dynamic_nullable(nilNumber)
+@plm_dynamic(normalString)
+@plm_dynamic_nonnull(nonnullString, @"default_nonnull_string")
+@plm_dynamic_nullable(nilString)
+@plm_dynamic_nonnull_keypath(keypathNonnullString, @"yyy", @"keypath_nonnull_string")
+@plm_dynamic_nullable_keypath(keypathNilString, @"yyy")
 
 @end
 
@@ -171,15 +180,20 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
   XCTAssertEqual(object.doubleIt, 500);
 }
 
-- (void)testNullable
+- (void)testNullability
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{}];
-  XCTAssertNil(object.nilString);
-  XCTAssertNil(object.nilString2);
-  XCTAssertNotNil(object.nonnullString);
-  XCTAssert(object.nonnullInt == 0);
-  XCTAssertNotNil(object.nonnullNumber);
+  XCTAssertNotNil(object.normalNumbler);
+  XCTAssertEqual(object.nonnullNumber, [NSNumber numberWithInteger:20]);
   XCTAssertNil(object.nilNumber);
+  XCTAssertEqual(object.keypathNonnullNumber, [NSNumber numberWithInteger:20]);
+  XCTAssertNil(object.keypathNilNumber);
+
+  XCTAssertNotNil(object.normalString);
+  XCTAssertEqual(object.nonnullString, @"default_nonnull_string");
+  XCTAssertNil(object.nilString);
+  XCTAssertEqual(object.keypathNonnullString, @"keypath_nonnull_string");
+  XCTAssertNil(object.keypathNilString);
 }
 
 - (void)testObjectTypes

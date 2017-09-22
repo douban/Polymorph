@@ -159,6 +159,7 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
                       Class targetClass,
                       BOOL useKeypath,
                       BOOL isNullable,
+                      id defaultValue,
                       const void *key)
 {
   id value = objc_getAssociatedObject(self, key);
@@ -178,17 +179,23 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
 
   if (!value && !isNullable) {
 
+    if (defaultValue) {
+      value = defaultValue;
+    }
+
 #ifdef DEBUG
-    if (!isRunningTest()) {
+    if (!isRunningTest() && !value) {
       NSCAssert(NO, @"nonnull property should not be nill");
     }
 #endif
 
-    if (targetClass == [NSNumber class]) {
-      value = [NSNumber numberWithInt:0];
-    }
-    else {
-      value = [[targetClass alloc] init];
+    if (!value) {
+      if (targetClass == [NSNumber class]) {
+        value = [NSNumber numberWithInt:0];
+      }
+      else {
+        value = [[targetClass alloc] init];
+      }
     }
   }
 
@@ -203,6 +210,7 @@ static BOOL inject_getter(Class cls,
                           ext_propertyAttributes *attrs,
                           NSString *jsonFieldName,
                           NSValueTransformer *transformer,
+                          id defaultValue,
                           BOOL useKeypath,
                           BOOL isNullable)
 {
@@ -232,7 +240,7 @@ static BOOL inject_getter(Class cls,
     SEL name = attrs->getter;
     Class targetClass = attrs->objectClass;
     getter = ^(NSObject<PLMRawDataProvider> *self_) {
-      return getter_impl(self_, jsonFieldName, transformer, targetClass, useKeypath, isNullable, name);
+      return getter_impl(self_, jsonFieldName, transformer, targetClass, useKeypath, isNullable, defaultValue, name);
     };
   }
   PRIMITIVE_GETTERS(char, charValue, int, intValue, short, shortValue,
@@ -492,9 +500,10 @@ static BOOL isRunningTest()
   }
 
   BOOL isNullable = [dpAttrs[_PolymorphAttributeNullable] boolValue];
+  id defaultValue = dpAttrs[_PolymorphAttributeDefaultValue];
 
   return getter
-  ? inject_getter(self, attrs, jsonField, transformer, useKeypath, isNullable)
+  ? inject_getter(self, attrs, jsonField, transformer, defaultValue, useKeypath, isNullable)
   : inject_setter(self, attrs, jsonField, transformer);
 }
 
