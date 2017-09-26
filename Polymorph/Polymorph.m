@@ -178,10 +178,7 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
   }
 
   if (!value && !isNullable) {
-
-    if (defaultValue) {
-      value = defaultValue;
-    }
+    value = defaultValue;
 
 #ifdef DEBUG
     if (!isRunningTest() && !value) {
@@ -197,6 +194,8 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
         value = [[targetClass alloc] init];
       }
     }
+
+    NSCAssert(value != nil, @"`value` should not be nil.");
   }
 
   safety_type_check(value, targetClass);
