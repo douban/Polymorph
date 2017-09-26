@@ -322,8 +322,15 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 - (void)testInvalidData
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"is_voted": @"yes", @"str": @1000}];
+
+  // UT 使用的是 Release 配置，Release 配置关掉了 Assertion，所以 DEBUG 下不会 Throws
+#ifdef DEBUG
   XCTAssertThrows(object.isVoted);
   XCTAssertThrows(object.str);
+#else
+  XCTAssertFalse(object.isVoted);
+  XCTAssertNil(object.str);
+#endif
 }
 
 - (void)testUnkownAccessor
