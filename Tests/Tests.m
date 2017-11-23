@@ -87,6 +87,18 @@ metamacro_foreach(decl_type_iter,, PRIMITIVE_TYPES)
 
 @property (nonatomic, assign) BOOL HTTP;
 
+@property (nonatomic, strong) NSNumber *normalNumbler;
+@property (nonatomic, strong) NSNumber *nonnullNumber;
+@property (nonatomic, strong, nullable) NSNumber *nilNumber;
+@property (nonatomic, strong, nonnull, readonly) NSNumber *keypathNonnullNumber;
+@property (nonatomic, strong, nullable, readonly) NSNumber *keypathNilNumber;
+
+@property (nonatomic, copy) NSString *normalString;
+@property (nonatomic, nonnull, copy) NSString *nonnullString;
+@property (nonatomic, nullable, copy) NSString *nilString;
+@property (nonatomic, copy, nonnull, readonly) NSString *keypathNonnullString;
+@property (nonatomic, copy, nullable, readonly) NSString *keypathNilString;
+
 @end
 
 NSValueTransformer *EmptyObjectTransformer()
@@ -121,6 +133,18 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic(emptyObject, @"empty", EmptyObjectTransformer())
 
+@plm_dynamic(normalNumbler)
+@plm_dynamic_nonnull(nonnullNumber, @"nonnull_number", [NSNumber numberWithInteger:20])
+@plm_dynamic_nullable(nilNumber, @"nil_number")
+@plm_dynamic_nonnull_keypath(keypathNonnullNumber, @"xxx", [NSNumber numberWithInteger:20])
+@plm_dynamic_nullable_keypath(keypathNilNumber, @"xxx")
+
+@plm_dynamic(normalString)
+@plm_dynamic_nonnull(nonnullString, @"default_nonnull_string")
+@plm_dynamic_nullable(nilString)
+@plm_dynamic_nonnull_keypath(keypathNonnullString, @"yyy", @"keypath_nonnull_string")
+@plm_dynamic_nullable_keypath(keypathNilString, @"yyy")
+
 @end
 
 @interface PolymorphTests : XCTestCase
@@ -154,6 +178,22 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
   XCTAssertEqual(object.doubleIt, 200);
   object.doubleIt = 500;
   XCTAssertEqual(object.doubleIt, 500);
+}
+
+- (void)testNullability
+{
+  _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{}];
+  XCTAssertNotNil(object.normalNumbler);
+  XCTAssertEqual(object.nonnullNumber, [NSNumber numberWithInteger:20]);
+  XCTAssertNil(object.nilNumber);
+  XCTAssertEqual(object.keypathNonnullNumber, [NSNumber numberWithInteger:20]);
+  XCTAssertNil(object.keypathNilNumber);
+
+  XCTAssertNotNil(object.normalString);
+  XCTAssertEqual(object.nonnullString, @"default_nonnull_string");
+  XCTAssertNil(object.nilString);
+  XCTAssertEqual(object.keypathNonnullString, @"keypath_nonnull_string");
+  XCTAssertNil(object.keypathNilString);
 }
 
 - (void)testObjectTypes
@@ -270,7 +310,7 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"is_voted": [NSNull null], @"url": [NSNull null]}];
   XCTAssertEqual(object.isVoted, NO);
-  XCTAssertNil(object.url);
+  XCTAssertNotNil(object.url);
 }
 
 - (void)testKeypath
@@ -282,8 +322,15 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 - (void)testInvalidData
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"is_voted": @"yes", @"str": @1000}];
+
+  // UT 使用的是 Release 配置，Release 配置关掉了 Assertion，所以 DEBUG 下不会 Throws
+#ifdef DEBUG
   XCTAssertThrows(object.isVoted);
   XCTAssertThrows(object.str);
+#else
+  XCTAssertFalse(object.isVoted);
+  XCTAssertNil(object.str);
+#endif
 }
 
 - (void)testUnkownAccessor

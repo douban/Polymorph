@@ -1,7 +1,21 @@
 language: objective-c
-osx_image: xcode7.2
+osx_image: xcode8.2
 script:
-    - xctool -sdk iphonesimulator -project Polymorph.xcodeproj -scheme "PolymorphTests iOS" test GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
-    - xctool -sdk macosx -project Polymorph.xcodeproj -scheme "PolymorphTests OSX" test GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+script:
+    - |
+      xcodebuild test \
+      -project Polymorph.xcodeproj \
+      -scheme "PolymorphTests iOS" \
+      -sdk iphonesimulator \
+      -destination 'platform=iOS Simulator,name=iPhone 7,OS=10.1' \
+      ONLY_ACTIVE_ARCH=NO  GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
+
+    - |
+      xcodebuild test \
+      -project Polymorph.xcodeproj \
+      -scheme "PolymorphTests OSX" \
+      -sdk macosx \
+      -destination 'platform=macOS,arch=x86_64' \
+      ONLY_ACTIVE_ARCH=NO  GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES
 after_success:
     - bash <(curl -s https://codecov.io/bash)
