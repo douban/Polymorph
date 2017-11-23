@@ -135,15 +135,15 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 
 @plm_dynamic(normalNumbler)
 @plm_dynamic_nonnull(nonnullNumber, @"nonnull_number", [NSNumber numberWithInteger:20])
-@plm_dynamic_nullable(nilNumber, @"nil_number")
+@plm_dynamic(nilNumber, @"nil_number")
 @plm_dynamic_nonnull_keypath(keypathNonnullNumber, @"xxx", [NSNumber numberWithInteger:20])
-@plm_dynamic_nullable_keypath(keypathNilNumber, @"xxx")
+@plm_dynamic_keypath(keypathNilNumber, @"xxx")
 
 @plm_dynamic(normalString)
 @plm_dynamic_nonnull(nonnullString, @"default_nonnull_string")
-@plm_dynamic_nullable(nilString)
+@plm_dynamic(nilString)
 @plm_dynamic_nonnull_keypath(keypathNonnullString, @"yyy", @"keypath_nonnull_string")
-@plm_dynamic_nullable_keypath(keypathNilString, @"yyy")
+@plm_dynamic_keypath(keypathNilString, @"yyy")
 
 @end
 
@@ -183,13 +183,13 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 - (void)testNullability
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{}];
-  XCTAssertNotNil(object.normalNumbler);
+  XCTAssertNil(object.normalNumbler);
   XCTAssertEqual(object.nonnullNumber, [NSNumber numberWithInteger:20]);
   XCTAssertNil(object.nilNumber);
   XCTAssertEqual(object.keypathNonnullNumber, [NSNumber numberWithInteger:20]);
   XCTAssertNil(object.keypathNilNumber);
 
-  XCTAssertNotNil(object.normalString);
+  XCTAssertNil(object.normalString);
   XCTAssertEqual(object.nonnullString, @"default_nonnull_string");
   XCTAssertNil(object.nilString);
   XCTAssertEqual(object.keypathNonnullString, @"keypath_nonnull_string");
@@ -310,7 +310,7 @@ metamacro_foreach(dynamic_type_iter,, PRIMITIVE_TYPES)
 {
   _TypesObject *object = [[_TypesObject alloc] initWithDictionary:@{@"is_voted": [NSNull null], @"url": [NSNull null]}];
   XCTAssertEqual(object.isVoted, NO);
-  XCTAssertNotNil(object.url);
+  XCTAssertNil(object.url);
 }
 
 - (void)testKeypath

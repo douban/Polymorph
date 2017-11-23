@@ -82,16 +82,13 @@
  *      @plm_dynamic(date, GMTDateTransformerName)
  *
  *  Note:
- *  1. Only plm_dynamic_nullable(...) and plm_dynamic_nullable_keypath(...) may return nil, the others will always
- *     return a nonnull value;
+ *  1. plm_dynamic(...) and plm_dynamic_keypath(...) may return nil;
  *  2. plm_dynamic_nonnull(...) and plm_dynamic_nonnull_keypath(...) need to set an object value at the last argument as
        the default value when it is nil;
- *  3. plm_dynamic(...), plm_dynamic_keypath(...) and plm_dynamic_multi(...) will return a default value when the object is nil;
- *  4. It is recommended to use plm_dynamic_nullable_xxx for `nullable` property and plm_dynamic_nonnull_xxx for `nonnull` property.
+ *  3. It is recommended to use plm_dynamic_nonnull_xxx for `nonnull` property so it will provide a default value to avoid
+ *     crashes when convert to `swift` non-optional properties.
  */
-#define plm_dynamic(...)  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), {_plm_dynamic_attr(__VA_ARGS__);})
-
-#define plm_dynamic_nullable(...) \
+#define plm_dynamic(...)  \
   _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
   NSDictionary *attrs = (NSDictionary *)_plm_dynamic_attr(__VA_ARGS__); \
   if (!attrs) { \
@@ -124,15 +121,8 @@
   _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
     NSMutableDictionary *attrs = [_plm_dynamic_attr(__VA_ARGS__) mutableCopy]; \
     attrs[_PolymorphAttributeKeypath] = @YES; \
+    attrs[_PolymorphAttributeNullable] = @YES; \
     attrs; \
-  })
-
-#define plm_dynamic_nullable_keypath(...) \
-  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
-  NSMutableDictionary *attrs = [_plm_dynamic_attr(__VA_ARGS__) mutableCopy]; \
-  attrs[_PolymorphAttributeKeypath] = @YES; \
-  attrs[_PolymorphAttributeNullable] = @YES; \
-  attrs; \
   })
 
 #define plm_dynamic_nonnull_keypath(...) \
@@ -190,7 +180,6 @@
 #define _PolymorphAttributeDefaultValue  @"dv"
 
 #define _plm_dynamic_attr(...) metamacro_concat(_plm_dynamic_attr, metamacro_argcount(__VA_ARGS__))(__VA_ARGS__)
-#define _plm_dynamic_nonnull_attr(...) metamacro_concat(_plm_dynamic_nonnull_attr, metamacro_argcount(__VA_ARGS__))(__VA_ARGS__)
 
 #define _plm_dynamic_attr1(...) nil
 #define _plm_dynamic_attr2(...) @{ \
@@ -207,6 +196,8 @@
   }
 
 #pragma mark - plm_dynamic_nonnull()
+
+#define _plm_dynamic_nonnull_attr(...) metamacro_concat(_plm_dynamic_nonnull_attr, metamacro_argcount(__VA_ARGS__))(__VA_ARGS__)
 
 #define _plm_dynamic_nonnull_attr2(...) @{ \
   _PolymorphAttributeDefaultValue: metamacro_at(1, __VA_ARGS__) \
