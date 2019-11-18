@@ -218,5 +218,4 @@
   _PolymorphAttributeDefaultValue: metamacro_at(4, __VA_ARGS__) \
 }
 
-
-
+FOUNDATION_EXPORT void plm_check_accessor(Class class);
