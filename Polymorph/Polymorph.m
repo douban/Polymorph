@@ -359,12 +359,10 @@ static BOOL inject_setter(Class cls,
   return class_addMethod(cls, attrs->setter, imp_implementationWithBlock(setter), types);
 }
 
-#ifdef DEBUG
-
 // If `class` activated Polymorph, it should not implement getter or setter for
 // properties declared with `plm_dynamic`. This method will be used in DEBUG
 // configuration to check that.
-static void check_accessor(Class class)
+void plm_check_accessor(Class class)
 {
   const char *ATTR_METHOD_PREFIX = "__plm_property_attr_";
 
@@ -406,8 +404,6 @@ static void check_accessor(Class class)
   }
 }
 
-#endif /* defined DEBUG */
-
 @implementation NSObject (Polymorph)
 
 + (void)plm_activate
@@ -428,10 +424,6 @@ static void check_accessor(Class class)
       PLMLog(@"Already swizzled.");
       return;
     }
-
-#ifdef DEBUG
-    check_accessor(polymorphRootClass);
-#endif /* defined DEBUG */
 
     objc_setAssociatedObject(polymorphRootClass, activationKey, @(YES), OBJC_ASSOCIATION_RETAIN);
 
