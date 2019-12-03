@@ -40,7 +40,11 @@ FOUNDATION_EXTERN NSValueTransformer *PLMArrayTransformerForClass(Class clazz)
   NSValueTransformer *transformer =
     [PLMValueTransformer transformerUsingForwardBlock:^id(id value) {
       NSCParameterAssert([value isKindOfClass:[NSDictionary class]]);
-      return [clazz objectWithPolymorphRawData:[value mutableCopy]];
+      if ([value isKindOfClass:[NSDictionary class]]) {
+        return [clazz objectWithPolymorphRawData:[value mutableCopy]];
+      } else {
+        return nil;
+      }
     } reverseBlock:^id(id value) {
       return [value polymorphRawData];
     }];
