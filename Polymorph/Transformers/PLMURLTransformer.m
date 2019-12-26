@@ -21,7 +21,10 @@ static void register_url_transformer()
          if (![value isKindOfClass:[NSString class]] || value.length == 0) {
            return nil;
          }
-
+         NSURL *url = [NSURL URLWithString:value];
+         if (url) {
+           return url;
+         }
          NSDataDetector *linkDetector = [NSDataDetector dataDetectorWithTypes:NSTextCheckingTypeLink error:nil];
          return [[linkDetector firstMatchInString:value options:0 range:NSMakeRange(0, value.length)] URL];
        }
