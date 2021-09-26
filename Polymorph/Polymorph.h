@@ -89,7 +89,7 @@
  *     crashes when convert to `swift` non-optional properties.
  */
 #define plm_dynamic(...)  \
-  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
+  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), ({ \
   NSDictionary *attrs = (NSDictionary *)_plm_dynamic_attr(__VA_ARGS__); \
   if (!attrs) { \
     attrs = [NSDictionary dictionary]; \
@@ -97,10 +97,10 @@
   NSMutableDictionary *mutAttrs = [attrs mutableCopy]; \
   mutAttrs[_PolymorphAttributeNullable] = @YES; \
   mutAttrs; \
-  })
+  }))
 
 #define plm_dynamic_nonnull(...) \
-  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
+  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), ({ \
     NSDictionary *attrs = (NSDictionary *)_plm_dynamic_nonnull_attr(__VA_ARGS__); \
     if (!attrs) { \
       attrs = [NSDictionary dictionary]; \
@@ -108,7 +108,7 @@
     NSMutableDictionary *mutAttrs = [attrs mutableCopy]; \
     mutAttrs[_PolymorphAttributeNullable] = @NO; \
     mutAttrs; \
-  })
+  }))
 
 /**
  *  Same arguments as `plm_dynamic`, except the field name specified by second
@@ -118,20 +118,20 @@
  *
  */
 #define plm_dynamic_keypath(...) \
-  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
+  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), ({ \
     NSMutableDictionary *attrs = [_plm_dynamic_attr(__VA_ARGS__) mutableCopy]; \
     attrs[_PolymorphAttributeKeypath] = @YES; \
     attrs[_PolymorphAttributeNullable] = @YES; \
     attrs; \
-  })
+  }))
 
 #define plm_dynamic_nonnull_keypath(...) \
-  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), { \
+  _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), ({ \
     NSMutableDictionary *attrs = [_plm_dynamic_nonnull_attr(__VA_ARGS__) mutableCopy]; \
     attrs[_PolymorphAttributeKeypath] = @YES; \
     attrs[_PolymorphAttributeNullable] = @NO; \
     attrs; \
-  })
+  }))
 
 /**
  *  `plm_dynamic` for many properties. Arguments are properties names list.
@@ -167,9 +167,9 @@
 
 @end
 
-#define _plm_dynamic_impl(PROPERTY, ...) \
+#define _plm_dynamic_impl(PROPERTY, ATTRS) \
   dynamic PROPERTY; \
-  + (NSDictionary *) metamacro_concat(__plm_property_attr_, PROPERTY) { return (__VA_ARGS__); }
+  + (NSDictionary *) metamacro_concat(__plm_property_attr_, PROPERTY) { return ATTRS; }
 
 #define _plm_dynamic_multi_iter(INDEX, PROPERTY) plm_dynamic(PROPERTY)
 
