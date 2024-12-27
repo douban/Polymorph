@@ -27,6 +27,12 @@
     VAR = nil; \
   }
 
+@interface NSDictionary (Polymorph)
+
+- (id)plm_safeValueForKeyPath:(NSString *)keyPath;
+
+@end
+
 /**
  *  Parse property name from getter method name.
  *
@@ -180,7 +186,7 @@ static id getter_impl(NSObject<PLMRawDataProvider> *self,
     return value;
   }
 
-  value = useKeypath ? [self.polymorphRawData valueForKeyPath:jsonField] : self.polymorphRawData[jsonField];
+  value = useKeypath ? [self.polymorphRawData plm_safeValueForKeyPath:jsonField] : self.polymorphRawData[jsonField];
 
   if (value == [NSNull null]) {
     value = nil;
@@ -232,7 +238,7 @@ static BOOL inject_getter(Class cls,
 
 #define PRIMITIVE_GETTER_0(SELECTOR) \
       id value = useKeypath \
-        ? [self_.polymorphRawData valueForKeyPath:jsonFieldName] \
+        ? [self_.polymorphRawData plm_safeValueForKeyPath:jsonFieldName] \
         : self_.polymorphRawData[jsonFieldName]; \
       if (value == [NSNull null]) { value = nil; } \
       if (transformer) { value = [transformer transformedValue:value]; } \
@@ -505,3 +511,24 @@ void plm_check_accessor(Class class)
 
 @end
 
+@implementation NSDictionary (Polymorph)
+
+- (id)plm_safeValueForKeyPath:(NSString *)keyPath
+{
+  NSArray *keys = [keyPath componentsSeparatedByString:@"."];
+  id currentObject = self;
+
+  for (NSInteger i = 0; i < keys.count; i++) {
+    if (![currentObject isKindOfClass:[NSDictionary class]] &&
+        ![currentObject isKindOfClass:[NSObject class]]) {
+      return nil;  // 如果当前对象既不是字典也不是对象，返回 nil
+    }
+
+    NSString *key = keys[i];
+    currentObject = [currentObject valueForKey:key];  // 对象情况
+  }
+
+  return currentObject;
+}
+
+@end
