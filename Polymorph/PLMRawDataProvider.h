@@ -13,8 +13,8 @@ NS_ASSUME_NONNULL_BEGIN
 /**
  *  Provide dictionary to Polymorph.
  *
- *  Class that use `plm_dynamic` macro should conforms to this protocol, and
- *  invoke `plm_activate` before accessing it's properties, which can be done
+ *  Class that use `plm_dynamic` macro should conform to this protocol, and
+ *  invoke `plm_activate` before accessing its properties, which can be done
  *  in `load` class method of that class.
  */
 @protocol PLMRawDataProvider <NSObject>

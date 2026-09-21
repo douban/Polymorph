@@ -18,7 +18,7 @@
 // Property `title` comes from field with same name `title`.
 @plm_dynamic(title)
 
-// `year` and `subtype` comes from fields with same names.
+// `year` and `subtype` come from fields with same names.
 @plm_dynamic_multi(year, subtype)
 
 // `rating` comes from `rating.average` keypath. Field value will be transformed
