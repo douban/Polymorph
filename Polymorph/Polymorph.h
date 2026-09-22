@@ -33,15 +33,15 @@
  *      @end
  *
  *
- *  It declares the property as `dynamic` property and generate accessor methods
+ *  It declares the property as `dynamic` property and generates accessor methods
  *  at runtime.
  *
  *  Following are a few prerequisites for using this macro:
  *  - Class should conform to `PLMRawDataProvider` protocol.
- *  - Class should invoke `plm_activate` before accessing it's property. `load`
+ *  - Class should invoke `plm_activate` before accessing its property. `load`
  *    is a good place to do this.
  *  - Property name should follow Objective-C naming convention.
- *    - Use cammel case for property name. e.g. `fooBar`.
+ *    - Use camel case for property name. e.g. `fooBar`.
  *    - Getter name should be the same as property name. With only one exception,
  *      if it's a `BOOL` type, use `isFooBar` instead.
  *    - Setter name should be `setFooBar:`.
@@ -61,17 +61,17 @@
  *
  *  Examples:
  *
- *  For property named `title` with `NSString` type, which reflect `title` in
+ *  For property named `title` with `NSString` type, which reflects `title` in
  *  dictionary:
  *
  *      @plm_dynamic(title)
  *
- *  For property named `publishDate` with `NSDate` type, which reflect
+ *  For property named `publishDate` with `NSDate` type, which reflects
  *  `publish_date` in dictionary:
  *
  *      @plm_dynamic(publishDate, @"publish_date", GMTDateTransformerName)
  *
- *  Please note that, arguments should be passed in the exactly order listed
+ *  Please note that, arguments should be passed in the exact order listed
  *  above. For example, if we have a `date` property with same field name, we
  *  should use following statement:
  *
@@ -86,7 +86,7 @@
  *  2. plm_dynamic_nonnull(...) and plm_dynamic_nonnull_keypath(...) need to set an object value at the last argument as
        the default value when it is nil;
  *  3. It is recommended to use plm_dynamic_nonnull_xxx for `nonnull` property so it will provide a default value to avoid
- *     crashes when convert to `swift` non-optional properties.
+ *     crashes when converting to `swift` non-optional properties.
  */
 #define plm_dynamic(...)  \
   _plm_dynamic_impl(metamacro_at(0, __VA_ARGS__), ({ \
@@ -112,7 +112,7 @@
 
 /**
  *  Same arguments as `plm_dynamic`, except the field name specified by second
- *  arugment will be used as dictionary keypath.
+ *  argument will be used as dictionary keypath.
  *
  *  Note that, this macro can only be used for readonly property.
  *
@@ -151,7 +151,7 @@
 @interface NSObject (Polymorph)
 
 /**
- *  Enable transforming properties for receiver and it's subclasses.
+ *  Enable transforming properties for receiver and its subclasses.
  *
  *  This message should be sent before accessing properties of this class's
  *  instances. One good place to do that is `load`:
